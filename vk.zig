@@ -11064,7 +11064,7 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(BaseCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @boolToInt(@field(cmds, field.name)));
+                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -11514,7 +11514,7 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(InstanceCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @boolToInt(@field(cmds, field.name)));
+                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -14297,7 +14297,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(DeviceCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @boolToInt(@field(cmds, field.name)));
+                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -19752,3 +19752,9 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
         }
     };
 }
+
+// -------------------------------------------
+
+pub const ANativeWindow = opaque {};
+pub const CAMetalLayer = opaque {};
+pub const AHardwareBuffer = opaque {};
