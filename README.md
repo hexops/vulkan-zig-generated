@@ -8,7 +8,7 @@ This is an _experimental_ Mach library, according to our [stability guarantees](
 
 > Experimental libraries may have their APIs change without much notice, and you may have to look at recent changes in order to update your code.
 
-[Why this library is not declared stable yet](https://machengine.org/next/docs/libs/experimental/#earcut)
+[Why this library is not declared stable yet](https://machengine.org/next/docs/libs/experimental/#vulkan-zig-generated)
 
 ## Getting started
 
