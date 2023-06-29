@@ -19,10 +19,10 @@ pub fn FlagsMixin(comptime FlagsType: type) type {
     return struct {
         pub const IntType = @typeInfo(FlagsType).Struct.backing_integer.?;
         pub fn toInt(self: FlagsType) IntType {
-            return @bitCast(IntType, self);
+            return @as(IntType, @bitCast(self));
         }
         pub fn fromInt(flags: IntType) FlagsType {
-            return @bitCast(FlagsType, flags);
+            return @as(FlagsType, @bitCast(flags));
         }
         pub fn merge(lhs: FlagsType, rhs: FlagsType) FlagsType {
             return fromInt(toInt(lhs) | toInt(rhs));
@@ -45,16 +45,16 @@ pub fn makeApiVersion(variant: u3, major: u7, minor: u10, patch: u12) u32 {
     return (@as(u32, variant) << 29) | (@as(u32, major) << 22) | (@as(u32, minor) << 12) | patch;
 }
 pub fn apiVersionVariant(version: u32) u3 {
-    return @truncate(u3, version >> 29);
+    return @as(u3, @truncate(version >> 29));
 }
 pub fn apiVersionMajor(version: u32) u7 {
-    return @truncate(u7, version >> 22);
+    return @as(u7, @truncate(version >> 22));
 }
 pub fn apiVersionMinor(version: u32) u10 {
-    return @truncate(u10, version >> 12);
+    return @as(u10, @truncate(version >> 12));
 }
 pub fn apiVersionPatch(version: u32) u12 {
-    return @truncate(u12, version);
+    return @as(u12, @truncate(version));
 }
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE = 256;
 pub const UUID_SIZE = 16;
@@ -11064,7 +11064,7 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(BaseCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
+                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
                 }
                 break :fields_len fields_len;
             };
@@ -11096,18 +11096,18 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
         pub fn load(loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(Instance.null_handle, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
         pub fn loadNoFail(loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(Instance.null_handle, name) orelse undefined;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
@@ -11514,7 +11514,7 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(InstanceCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
+                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
                 }
                 break :fields_len fields_len;
             };
@@ -11546,18 +11546,18 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
         pub fn load(instance: Instance, loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(instance, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
         pub fn loadNoFail(instance: Instance, loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(instance, name) orelse undefined;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
@@ -14297,7 +14297,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(DeviceCommandFlags).Struct.fields) |field| {
-                    fields_len += @intCast(u32, @intFromBool(@field(cmds, field.name)));
+                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
                 }
                 break :fields_len fields_len;
             };
@@ -14329,18 +14329,18 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
         pub fn load(device: Device, loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(device, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
         pub fn loadNoFail(device: Device, loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @ptrCast([*:0]const u8, field.name ++ "\x00");
+                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
                 const cmd_ptr = loader(device, name) orelse undefined;
-                @field(self.dispatch, field.name) = @ptrCast(field.type, cmd_ptr);
+                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
             }
             return self;
         }
