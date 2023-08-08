@@ -4,11 +4,11 @@
 
 ## Experimental
 
-This is an _experimental_ Mach library, according to our [stability guarantees](https://machengine.org/next/docs/libs/):
+This is an _experimental_ Mach library, according to our [stability guarantees](https://machengine.org/about/stability/):
 
 > Experimental libraries may have their APIs change without much notice, and you may have to look at recent changes in order to update your code.
 
-[Why this library is not declared stable yet](https://machengine.org/next/docs/libs/experimental/#vulkan-zig-generated)
+**Status**: We imagine at some point that [Snektron/vulkan-zig](https://github.com/Snektron/vulkan-zig) will itself support package manager use, and so we'll deprecate this package once that happens and is equally as nice as this package.
 
 ## Getting started
 
@@ -22,7 +22,7 @@ Create a `build.zig.zon` file in your project (replace `$LATEST_COMMIT` with the
     .version = "0.1.0",
     .dependencies = .{
         .vulkan_zig_generated = .{
-            .url = "https://github.com/hexops/vulkan-zig-generated/archive/$LATEST_COMMIT.tar.gz",
+            .url = "https://pkg.machengine.org/vulkan-zig-generated/$LATEST_COMMIT.tar.gz",
         },
     },
 }
