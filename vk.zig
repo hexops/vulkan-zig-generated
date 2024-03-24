@@ -19,10 +19,10 @@ pub fn FlagsMixin(comptime FlagsType: type) type {
     return struct {
         pub const IntType = @typeInfo(FlagsType).Struct.backing_integer.?;
         pub fn toInt(self: FlagsType) IntType {
-            return @as(IntType, @bitCast(self));
+            return @bitCast(self);
         }
         pub fn fromInt(flags: IntType) FlagsType {
-            return @as(FlagsType, @bitCast(flags));
+            return @bitCast(flags);
         }
         pub fn merge(lhs: FlagsType, rhs: FlagsType) FlagsType {
             return fromInt(toInt(lhs) | toInt(rhs));
@@ -39,22 +39,49 @@ pub fn FlagsMixin(comptime FlagsType: type) type {
         pub fn contains(lhs: FlagsType, rhs: FlagsType) bool {
             return toInt(intersect(lhs, rhs)) == toInt(rhs);
         }
+        pub usingnamespace FlagFormatMixin(FlagsType);
+    };
+}
+fn FlagFormatMixin(comptime FlagsType: type) type {
+    return struct {
+        pub fn format(
+            self: FlagsType,
+            comptime _: []const u8,
+            _: std.fmt.FormatOptions,
+            writer: anytype,
+        ) !void {
+            try writer.writeAll(@typeName(FlagsType) ++ "{");
+            var first = true;
+            inline for (comptime std.meta.fieldNames(FlagsType)) |name| {
+                if (name[0] == '_') continue;
+                if (@field(self, name)) {
+                    if (first) {
+                        try writer.writeAll(" ." ++ name);
+                        first = false;
+                    } else {
+                        try writer.writeAll(", ." ++ name);
+                    }
+                }
+            }
+            if (!first) try writer.writeAll(" ");
+            try writer.writeAll("}");
+        }
     };
 }
 pub fn makeApiVersion(variant: u3, major: u7, minor: u10, patch: u12) u32 {
     return (@as(u32, variant) << 29) | (@as(u32, major) << 22) | (@as(u32, minor) << 12) | patch;
 }
 pub fn apiVersionVariant(version: u32) u3 {
-    return @as(u3, @truncate(version >> 29));
+    return @truncate(version >> 29);
 }
 pub fn apiVersionMajor(version: u32) u7 {
-    return @as(u7, @truncate(version >> 22));
+    return @truncate(version >> 22);
 }
 pub fn apiVersionMinor(version: u32) u10 {
-    return @as(u10, @truncate(version >> 12));
+    return @truncate(version >> 12);
 }
 pub fn apiVersionPatch(version: u32) u12 {
-    return @as(u12, @truncate(version));
+    return @truncate(version);
 }
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE = 256;
 pub const UUID_SIZE = 16;
@@ -8286,7 +8313,7 @@ pub const PfnGetDeviceQueue = *const fn (
 pub const PfnQueueSubmit = *const fn (
     queue: Queue,
     submit_count: u32,
-    p_submits: [*]const SubmitInfo,
+    p_submits: ?[*]const SubmitInfo,
     fence: Fence,
 ) callconv(vulkan_call_conv) Result;
 pub const PfnQueueWaitIdle = *const fn (
@@ -8374,7 +8401,7 @@ pub const PfnGetPhysicalDeviceSparseImageFormatProperties = *const fn (
 pub const PfnQueueBindSparse = *const fn (
     queue: Queue,
     bind_info_count: u32,
-    p_bind_info: [*]const BindSparseInfo,
+    p_bind_info: ?[*]const BindSparseInfo,
     fence: Fence,
 ) callconv(vulkan_call_conv) Result;
 pub const PfnCreateFence = *const fn (
@@ -8633,9 +8660,9 @@ pub const PfnFreeDescriptorSets = *const fn (
 pub const PfnUpdateDescriptorSets = *const fn (
     device: Device,
     descriptor_write_count: u32,
-    p_descriptor_writes: [*]const WriteDescriptorSet,
+    p_descriptor_writes: ?[*]const WriteDescriptorSet,
     descriptor_copy_count: u32,
-    p_descriptor_copies: [*]const CopyDescriptorSet,
+    p_descriptor_copies: ?[*]const CopyDescriptorSet,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCreateFramebuffer = *const fn (
     device: Device,
@@ -8761,7 +8788,7 @@ pub const PfnCmdBindDescriptorSets = *const fn (
     descriptor_set_count: u32,
     p_descriptor_sets: [*]const DescriptorSet,
     dynamic_offset_count: u32,
-    p_dynamic_offsets: [*]const u32,
+    p_dynamic_offsets: ?[*]const u32,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdBindIndexBuffer = *const fn (
     command_buffer: CommandBuffer,
@@ -8921,11 +8948,11 @@ pub const PfnCmdWaitEvents = *const fn (
     src_stage_mask: PipelineStageFlags,
     dst_stage_mask: PipelineStageFlags,
     memory_barrier_count: u32,
-    p_memory_barriers: [*]const MemoryBarrier,
+    p_memory_barriers: ?[*]const MemoryBarrier,
     buffer_memory_barrier_count: u32,
-    p_buffer_memory_barriers: [*]const BufferMemoryBarrier,
+    p_buffer_memory_barriers: ?[*]const BufferMemoryBarrier,
     image_memory_barrier_count: u32,
-    p_image_memory_barriers: [*]const ImageMemoryBarrier,
+    p_image_memory_barriers: ?[*]const ImageMemoryBarrier,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdPipelineBarrier = *const fn (
     command_buffer: CommandBuffer,
@@ -8933,11 +8960,11 @@ pub const PfnCmdPipelineBarrier = *const fn (
     dst_stage_mask: PipelineStageFlags,
     dependency_flags: DependencyFlags,
     memory_barrier_count: u32,
-    p_memory_barriers: [*]const MemoryBarrier,
+    p_memory_barriers: ?[*]const MemoryBarrier,
     buffer_memory_barrier_count: u32,
-    p_buffer_memory_barriers: [*]const BufferMemoryBarrier,
+    p_buffer_memory_barriers: ?[*]const BufferMemoryBarrier,
     image_memory_barrier_count: u32,
-    p_image_memory_barriers: [*]const ImageMemoryBarrier,
+    p_image_memory_barriers: ?[*]const ImageMemoryBarrier,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdBeginQuery = *const fn (
     command_buffer: CommandBuffer,
@@ -9901,14 +9928,14 @@ pub const PfnCmdBeginTransformFeedbackEXT = *const fn (
     command_buffer: CommandBuffer,
     first_counter_buffer: u32,
     counter_buffer_count: u32,
-    p_counter_buffers: [*]const Buffer,
+    p_counter_buffers: ?[*]const Buffer,
     p_counter_buffer_offsets: ?[*]const DeviceSize,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdEndTransformFeedbackEXT = *const fn (
     command_buffer: CommandBuffer,
     first_counter_buffer: u32,
     counter_buffer_count: u32,
-    p_counter_buffers: [*]const Buffer,
+    p_counter_buffers: ?[*]const Buffer,
     p_counter_buffer_offsets: ?[*]const DeviceSize,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdBeginQueryIndexedEXT = *const fn (
@@ -9954,7 +9981,7 @@ pub const PfnCmdSetCoarseSampleOrderNV = *const fn (
     command_buffer: CommandBuffer,
     sample_order_type: CoarseSampleOrderTypeNV,
     custom_sample_order_count: u32,
-    p_custom_sample_orders: [*]const CoarseSampleOrderCustomNV,
+    p_custom_sample_orders: ?[*]const CoarseSampleOrderCustomNV,
 ) callconv(vulkan_call_conv) void;
 pub const PfnCmdDrawMeshTasksNV = *const fn (
     command_buffer: CommandBuffer,
@@ -11024,6 +11051,7 @@ pub fn CommandFlagsMixin(comptime CommandFlags: type) type {
             }
             return true;
         }
+        pub usingnamespace FlagFormatMixin(CommandFlags);
     };
 }
 pub const BaseCommandFlags = packed struct {
@@ -11064,7 +11092,7 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(BaseCommandFlags).Struct.fields) |field| {
-                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
+                    fields_len += @intCast(@intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -11086,7 +11114,7 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
             }
             break :blk @Type(.{
                 .Struct = .{
-                    .layout = .Auto,
+                    .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
                     .is_tuple = false,
@@ -11096,18 +11124,18 @@ pub fn BaseWrapper(comptime cmds: BaseCommandFlags) type {
         pub fn load(loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(Instance.null_handle, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
         pub fn loadNoFail(loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(Instance.null_handle, name) orelse undefined;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
@@ -11514,7 +11542,7 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(InstanceCommandFlags).Struct.fields) |field| {
-                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
+                    fields_len += @intCast(@intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -11536,7 +11564,7 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
             }
             break :blk @Type(.{
                 .Struct = .{
-                    .layout = .Auto,
+                    .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
                     .is_tuple = false,
@@ -11546,18 +11574,18 @@ pub fn InstanceWrapper(comptime cmds: InstanceCommandFlags) type {
         pub fn load(instance: Instance, loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(instance, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
         pub fn loadNoFail(instance: Instance, loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(instance, name) orelse undefined;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
@@ -14297,7 +14325,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
                 for (@typeInfo(DeviceCommandFlags).Struct.fields) |field| {
-                    fields_len += @as(u32, @intCast(@intFromBool(@field(cmds, field.name))));
+                    fields_len += @intCast(@intFromBool(@field(cmds, field.name)));
                 }
                 break :fields_len fields_len;
             };
@@ -14319,7 +14347,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             }
             break :blk @Type(.{
                 .Struct = .{
-                    .layout = .Auto,
+                    .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
                     .is_tuple = false,
@@ -14329,18 +14357,18 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
         pub fn load(device: Device, loader: anytype) error{CommandLoadFailure}!Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(device, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
         pub fn loadNoFail(device: Device, loader: anytype) Self {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
-                const name = @as([*:0]const u8, @ptrCast(field.name ++ "\x00"));
+                const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
                 const cmd_ptr = loader(device, name) orelse undefined;
-                @field(self.dispatch, field.name) = @as(field.type, @ptrCast(cmd_ptr));
+                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
             }
             return self;
         }
@@ -14379,7 +14407,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             self: Self,
             queue: Queue,
             submit_count: u32,
-            p_submits: [*]const SubmitInfo,
+            p_submits: ?[*]const SubmitInfo,
             fence: Fence,
         ) QueueSubmitError!void {
             const result = self.dispatch.vkQueueSubmit(
@@ -14685,7 +14713,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             self: Self,
             queue: Queue,
             bind_info_count: u32,
-            p_bind_info: [*]const BindSparseInfo,
+            p_bind_info: ?[*]const BindSparseInfo,
             fence: Fence,
         ) QueueBindSparseError!void {
             const result = self.dispatch.vkQueueBindSparse(
@@ -15651,9 +15679,9 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             self: Self,
             device: Device,
             descriptor_write_count: u32,
-            p_descriptor_writes: [*]const WriteDescriptorSet,
+            p_descriptor_writes: ?[*]const WriteDescriptorSet,
             descriptor_copy_count: u32,
-            p_descriptor_copies: [*]const CopyDescriptorSet,
+            p_descriptor_copies: ?[*]const CopyDescriptorSet,
         ) void {
             self.dispatch.vkUpdateDescriptorSets(
                 device,
@@ -16042,7 +16070,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             descriptor_set_count: u32,
             p_descriptor_sets: [*]const DescriptorSet,
             dynamic_offset_count: u32,
-            p_dynamic_offsets: [*]const u32,
+            p_dynamic_offsets: ?[*]const u32,
         ) void {
             self.dispatch.vkCmdBindDescriptorSets(
                 command_buffer,
@@ -16407,11 +16435,11 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             src_stage_mask: PipelineStageFlags,
             dst_stage_mask: PipelineStageFlags,
             memory_barrier_count: u32,
-            p_memory_barriers: [*]const MemoryBarrier,
+            p_memory_barriers: ?[*]const MemoryBarrier,
             buffer_memory_barrier_count: u32,
-            p_buffer_memory_barriers: [*]const BufferMemoryBarrier,
+            p_buffer_memory_barriers: ?[*]const BufferMemoryBarrier,
             image_memory_barrier_count: u32,
-            p_image_memory_barriers: [*]const ImageMemoryBarrier,
+            p_image_memory_barriers: ?[*]const ImageMemoryBarrier,
         ) void {
             self.dispatch.vkCmdWaitEvents(
                 command_buffer,
@@ -16434,11 +16462,11 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             dst_stage_mask: PipelineStageFlags,
             dependency_flags: DependencyFlags,
             memory_barrier_count: u32,
-            p_memory_barriers: [*]const MemoryBarrier,
+            p_memory_barriers: ?[*]const MemoryBarrier,
             buffer_memory_barrier_count: u32,
-            p_buffer_memory_barriers: [*]const BufferMemoryBarrier,
+            p_buffer_memory_barriers: ?[*]const BufferMemoryBarrier,
             image_memory_barrier_count: u32,
-            p_image_memory_barriers: [*]const ImageMemoryBarrier,
+            p_image_memory_barriers: ?[*]const ImageMemoryBarrier,
         ) void {
             self.dispatch.vkCmdPipelineBarrier(
                 command_buffer,
@@ -18855,7 +18883,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             command_buffer: CommandBuffer,
             first_counter_buffer: u32,
             counter_buffer_count: u32,
-            p_counter_buffers: [*]const Buffer,
+            p_counter_buffers: ?[*]const Buffer,
             p_counter_buffer_offsets: ?[*]const DeviceSize,
         ) void {
             self.dispatch.vkCmdBeginTransformFeedbackEXT(
@@ -18871,7 +18899,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             command_buffer: CommandBuffer,
             first_counter_buffer: u32,
             counter_buffer_count: u32,
-            p_counter_buffers: [*]const Buffer,
+            p_counter_buffers: ?[*]const Buffer,
             p_counter_buffer_offsets: ?[*]const DeviceSize,
         ) void {
             self.dispatch.vkCmdEndTransformFeedbackEXT(
@@ -18977,7 +19005,7 @@ pub fn DeviceWrapper(comptime cmds: DeviceCommandFlags) type {
             command_buffer: CommandBuffer,
             sample_order_type: CoarseSampleOrderTypeNV,
             custom_sample_order_count: u32,
-            p_custom_sample_orders: [*]const CoarseSampleOrderCustomNV,
+            p_custom_sample_orders: ?[*]const CoarseSampleOrderCustomNV,
         ) void {
             self.dispatch.vkCmdSetCoarseSampleOrderNV(
                 command_buffer,
