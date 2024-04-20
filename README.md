@@ -8,7 +8,7 @@ This is an _experimental_ Mach library, according to our [stability guarantees](
 
 > Experimental libraries may have their APIs change without much notice, and you may have to look at recent changes in order to update your code.
 
-**Status**: We imagine at some point that [Snektron/vulkan-zig](https://github.com/Snektron/vulkan-zig) will itself support package manager use, and so we'll deprecate this package once that happens and is equally as nice as this package.
+**Status**: Used in Mach so relatively stable, but you can consider using [Snektron/vulkan-zig](https://github.com/Snektron/vulkan-zig) directly depending on your use case.
 
 ## Getting started
 
