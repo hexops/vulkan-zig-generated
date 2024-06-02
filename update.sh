@@ -2,25 +2,35 @@
 set -euo pipefail
 
 rm -rf vulkan-zig/
+rm -rf Vulkan-Docs/
+
+# `git clone --depth 1` but at a specific revision
+mkdir Vulkan-Docs/
+pushd Vulkan-Docs
+git init
+git remote add origin https://github.com/KhronosGroup/Vulkan-Docs
+git fetch --depth 1 origin ed4ba0242beb89a1795d6084709fa9e713559c94
+git checkout FETCH_HEAD
+popd
+
+# Update vk.xml
+mv Vulkan-Docs/xml/vk.xml .
 
 # `git clone --depth 1` but at a specific revision
 mkdir vulkan-zig/
 pushd vulkan-zig
 git init
-git remote add origin https://github.com/Snektron/vulkan-zig
-git fetch --depth 1 origin ac4103a733c479b599aae8d42c08cabd7d5cf48a
+git remote add origin https://github.com/slimsag/vulkan-zig
+git fetch --depth 1 origin cfaf58a4de0d876d37d6dd9a05a5060e4f9b7cd9
 git checkout FETCH_HEAD
 popd
 
-# Generate vulkan bindings
-zig run vulkan-zig/generator/main.zig -- vk.xml vk.zig
+# Generate Vulkan Zig bindings
+pushd vulkan-zig/
+zig build
+popd
 
-echo "
-// -------------------------------------------
+./vulkan-zig/zig-out/bin/vulkan-zig-generator vk.xml vk.zig
 
-pub const ANativeWindow = opaque{};
-pub const CAMetalLayer = opaque{};
-pub const AHardwareBuffer = opaque{};
-" >> vk.zig
-
-zig fmt vk.zig
+rm -rf vulkan-zig/
+rm -rf Vulkan-Docs/
