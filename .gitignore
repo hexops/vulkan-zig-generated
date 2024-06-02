@@ -9,7 +9,7 @@
 # Cheers!
 # -andrewrk
 
-zig-cache/
+.zig-cache/
 zig-out/
 /release/
 /debug/
@@ -20,3 +20,4 @@ zig-out/
 **/*.png
 !assets/*.png
 vulkan-zig/
+Vulkan-Docs/
