@@ -20,7 +20,7 @@ mv Vulkan-Docs/xml/vk.xml .
 mkdir vulkan-zig/
 pushd vulkan-zig
 git init
-git remote add origin https://github.com/slimsag/vulkan-zig
+git remote add origin https://github.com/Snektron/vulkan-zig
 git fetch --depth 1 origin cfaf58a4de0d876d37d6dd9a05a5060e4f9b7cd9
 git checkout FETCH_HEAD
 popd
