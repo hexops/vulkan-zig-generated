@@ -4,6 +4,7 @@ const std = @import("std");
 const builtin = @import("builtin");
 const root = @import("root");
 const vk = @This();
+const Allocator = std.mem.Allocator;
 
 pub const vulkan_call_conv: std.builtin.CallingConvention = if (builtin.os.tag == .windows and builtin.cpu.arch == .x86)
     .Stdcall
@@ -17,7 +18,7 @@ else
     .C;
 pub fn FlagsMixin(comptime FlagsType: type) type {
     return struct {
-        pub const IntType = @typeInfo(FlagsType).Struct.backing_integer.?;
+        pub const IntType = @typeInfo(FlagsType).@"struct".backing_integer.?;
         pub fn toInt(self: FlagsType) IntType {
             return @bitCast(self);
         }
@@ -39,7 +40,6 @@ pub fn FlagsMixin(comptime FlagsType: type) type {
         pub fn contains(lhs: FlagsType, rhs: FlagsType) bool {
             return toInt(intersect(lhs, rhs)) == toInt(rhs);
         }
-        pub usingnamespace FlagFormatMixin(FlagsType);
     };
 }
 fn FlagFormatMixin(comptime FlagsType: type) type {
@@ -52,7 +52,7 @@ fn FlagFormatMixin(comptime FlagsType: type) type {
         ) !void {
             try writer.writeAll(@typeName(FlagsType) ++ "{");
             var first = true;
-            @setEvalBranchQuota(10_000);
+            @setEvalBranchQuota(100_000);
             inline for (comptime std.meta.fieldNames(FlagsType)) |name| {
                 if (name[0] == '_') continue;
                 if (@field(self, name)) {
@@ -179,67 +179,172 @@ pub const DeviceSize = u64;
 pub const DeviceAddress = u64;
 pub const QueryPoolCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(QueryPoolCreateFlags);
+    pub const toInt = FlagsMixin(QueryPoolCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(QueryPoolCreateFlags).fromInt;
+    pub const merge = FlagsMixin(QueryPoolCreateFlags).merge;
+    pub const intersect = FlagsMixin(QueryPoolCreateFlags).intersect;
+    pub const complement = FlagsMixin(QueryPoolCreateFlags).complement;
+    pub const subtract = FlagsMixin(QueryPoolCreateFlags).subtract;
+    pub const contains = FlagsMixin(QueryPoolCreateFlags).contains;
+    pub const format = FlagFormatMixin(QueryPoolCreateFlags).format;
 };
 pub const PipelineDynamicStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineDynamicStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineDynamicStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineDynamicStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineDynamicStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineDynamicStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineDynamicStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineDynamicStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineDynamicStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineDynamicStateCreateFlags).format;
 };
 pub const PipelineMultisampleStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineMultisampleStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineMultisampleStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineMultisampleStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineMultisampleStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineMultisampleStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineMultisampleStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineMultisampleStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineMultisampleStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineMultisampleStateCreateFlags).format;
 };
 pub const PipelineRasterizationStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineRasterizationStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineRasterizationStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineRasterizationStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineRasterizationStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineRasterizationStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineRasterizationStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineRasterizationStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineRasterizationStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineRasterizationStateCreateFlags).format;
 };
 pub const PipelineViewportStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineViewportStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineViewportStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineViewportStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineViewportStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineViewportStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineViewportStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineViewportStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineViewportStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineViewportStateCreateFlags).format;
 };
 pub const PipelineTessellationStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineTessellationStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineTessellationStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineTessellationStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineTessellationStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineTessellationStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineTessellationStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineTessellationStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineTessellationStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineTessellationStateCreateFlags).format;
 };
 pub const PipelineInputAssemblyStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineInputAssemblyStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineInputAssemblyStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineInputAssemblyStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineInputAssemblyStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineInputAssemblyStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineInputAssemblyStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineInputAssemblyStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineInputAssemblyStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineInputAssemblyStateCreateFlags).format;
 };
 pub const PipelineVertexInputStateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineVertexInputStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineVertexInputStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineVertexInputStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineVertexInputStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineVertexInputStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineVertexInputStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineVertexInputStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineVertexInputStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineVertexInputStateCreateFlags).format;
 };
 pub const BufferViewCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(BufferViewCreateFlags);
+    pub const toInt = FlagsMixin(BufferViewCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(BufferViewCreateFlags).fromInt;
+    pub const merge = FlagsMixin(BufferViewCreateFlags).merge;
+    pub const intersect = FlagsMixin(BufferViewCreateFlags).intersect;
+    pub const complement = FlagsMixin(BufferViewCreateFlags).complement;
+    pub const subtract = FlagsMixin(BufferViewCreateFlags).subtract;
+    pub const contains = FlagsMixin(BufferViewCreateFlags).contains;
+    pub const format = FlagFormatMixin(BufferViewCreateFlags).format;
 };
 pub const DeviceCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DeviceCreateFlags);
+    pub const toInt = FlagsMixin(DeviceCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(DeviceCreateFlags).fromInt;
+    pub const merge = FlagsMixin(DeviceCreateFlags).merge;
+    pub const intersect = FlagsMixin(DeviceCreateFlags).intersect;
+    pub const complement = FlagsMixin(DeviceCreateFlags).complement;
+    pub const subtract = FlagsMixin(DeviceCreateFlags).subtract;
+    pub const contains = FlagsMixin(DeviceCreateFlags).contains;
+    pub const format = FlagFormatMixin(DeviceCreateFlags).format;
 };
 pub const SemaphoreCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(SemaphoreCreateFlags);
+    pub const toInt = FlagsMixin(SemaphoreCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(SemaphoreCreateFlags).fromInt;
+    pub const merge = FlagsMixin(SemaphoreCreateFlags).merge;
+    pub const intersect = FlagsMixin(SemaphoreCreateFlags).intersect;
+    pub const complement = FlagsMixin(SemaphoreCreateFlags).complement;
+    pub const subtract = FlagsMixin(SemaphoreCreateFlags).subtract;
+    pub const contains = FlagsMixin(SemaphoreCreateFlags).contains;
+    pub const format = FlagFormatMixin(SemaphoreCreateFlags).format;
 };
 pub const ShaderModuleCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ShaderModuleCreateFlags);
+    pub const toInt = FlagsMixin(ShaderModuleCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(ShaderModuleCreateFlags).fromInt;
+    pub const merge = FlagsMixin(ShaderModuleCreateFlags).merge;
+    pub const intersect = FlagsMixin(ShaderModuleCreateFlags).intersect;
+    pub const complement = FlagsMixin(ShaderModuleCreateFlags).complement;
+    pub const subtract = FlagsMixin(ShaderModuleCreateFlags).subtract;
+    pub const contains = FlagsMixin(ShaderModuleCreateFlags).contains;
+    pub const format = FlagFormatMixin(ShaderModuleCreateFlags).format;
 };
 pub const DescriptorPoolResetFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DescriptorPoolResetFlags);
+    pub const toInt = FlagsMixin(DescriptorPoolResetFlags).toInt;
+    pub const fromInt = FlagsMixin(DescriptorPoolResetFlags).fromInt;
+    pub const merge = FlagsMixin(DescriptorPoolResetFlags).merge;
+    pub const intersect = FlagsMixin(DescriptorPoolResetFlags).intersect;
+    pub const complement = FlagsMixin(DescriptorPoolResetFlags).complement;
+    pub const subtract = FlagsMixin(DescriptorPoolResetFlags).subtract;
+    pub const contains = FlagsMixin(DescriptorPoolResetFlags).contains;
+    pub const format = FlagFormatMixin(DescriptorPoolResetFlags).format;
 };
 pub const GeometryFlagsNV = GeometryFlagsKHR;
 pub const GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 pub const BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 pub const PrivateDataSlotCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PrivateDataSlotCreateFlags);
+    pub const toInt = FlagsMixin(PrivateDataSlotCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PrivateDataSlotCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PrivateDataSlotCreateFlags).merge;
+    pub const intersect = FlagsMixin(PrivateDataSlotCreateFlags).intersect;
+    pub const complement = FlagsMixin(PrivateDataSlotCreateFlags).complement;
+    pub const subtract = FlagsMixin(PrivateDataSlotCreateFlags).subtract;
+    pub const contains = FlagsMixin(PrivateDataSlotCreateFlags).contains;
+    pub const format = FlagFormatMixin(PrivateDataSlotCreateFlags).format;
 };
 pub const PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
 pub const DescriptorUpdateTemplateCreateFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DescriptorUpdateTemplateCreateFlags);
+    pub const toInt = FlagsMixin(DescriptorUpdateTemplateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(DescriptorUpdateTemplateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(DescriptorUpdateTemplateCreateFlags).merge;
+    pub const intersect = FlagsMixin(DescriptorUpdateTemplateCreateFlags).intersect;
+    pub const complement = FlagsMixin(DescriptorUpdateTemplateCreateFlags).complement;
+    pub const subtract = FlagsMixin(DescriptorUpdateTemplateCreateFlags).subtract;
+    pub const contains = FlagsMixin(DescriptorUpdateTemplateCreateFlags).contains;
+    pub const format = FlagFormatMixin(DescriptorUpdateTemplateCreateFlags).format;
 };
 pub const DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 pub const PipelineCreationFeedbackFlagsEXT = PipelineCreationFeedbackFlags;
@@ -248,87 +353,227 @@ pub const AccessFlags2KHR = AccessFlags2;
 pub const PipelineStageFlags2KHR = PipelineStageFlags2;
 pub const AccelerationStructureMotionInfoFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(AccelerationStructureMotionInfoFlagsNV);
+    pub const toInt = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).fromInt;
+    pub const merge = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).merge;
+    pub const intersect = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).intersect;
+    pub const complement = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).complement;
+    pub const subtract = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).subtract;
+    pub const contains = FlagsMixin(AccelerationStructureMotionInfoFlagsNV).contains;
+    pub const format = FlagFormatMixin(AccelerationStructureMotionInfoFlagsNV).format;
 };
 pub const AccelerationStructureMotionInstanceFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(AccelerationStructureMotionInstanceFlagsNV);
+    pub const toInt = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).fromInt;
+    pub const merge = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).merge;
+    pub const intersect = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).intersect;
+    pub const complement = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).complement;
+    pub const subtract = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).subtract;
+    pub const contains = FlagsMixin(AccelerationStructureMotionInstanceFlagsNV).contains;
+    pub const format = FlagFormatMixin(AccelerationStructureMotionInstanceFlagsNV).format;
 };
 pub const FormatFeatureFlags2KHR = FormatFeatureFlags2;
 pub const RenderingFlagsKHR = RenderingFlags;
 pub const DirectDriverLoadingFlagsLUNARG = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DirectDriverLoadingFlagsLUNARG);
+    pub const toInt = FlagsMixin(DirectDriverLoadingFlagsLUNARG).toInt;
+    pub const fromInt = FlagsMixin(DirectDriverLoadingFlagsLUNARG).fromInt;
+    pub const merge = FlagsMixin(DirectDriverLoadingFlagsLUNARG).merge;
+    pub const intersect = FlagsMixin(DirectDriverLoadingFlagsLUNARG).intersect;
+    pub const complement = FlagsMixin(DirectDriverLoadingFlagsLUNARG).complement;
+    pub const subtract = FlagsMixin(DirectDriverLoadingFlagsLUNARG).subtract;
+    pub const contains = FlagsMixin(DirectDriverLoadingFlagsLUNARG).contains;
+    pub const format = FlagFormatMixin(DirectDriverLoadingFlagsLUNARG).format;
 };
 pub const DisplayModeCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DisplayModeCreateFlagsKHR);
+    pub const toInt = FlagsMixin(DisplayModeCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(DisplayModeCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(DisplayModeCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(DisplayModeCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(DisplayModeCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(DisplayModeCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(DisplayModeCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(DisplayModeCreateFlagsKHR).format;
 };
 pub const DisplaySurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DisplaySurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(DisplaySurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(DisplaySurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(DisplaySurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(DisplaySurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(DisplaySurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(DisplaySurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(DisplaySurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(DisplaySurfaceCreateFlagsKHR).format;
 };
 pub const AndroidSurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(AndroidSurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(AndroidSurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(AndroidSurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(AndroidSurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(AndroidSurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(AndroidSurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(AndroidSurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(AndroidSurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(AndroidSurfaceCreateFlagsKHR).format;
 };
 pub const ViSurfaceCreateFlagsNN = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ViSurfaceCreateFlagsNN);
+    pub const toInt = FlagsMixin(ViSurfaceCreateFlagsNN).toInt;
+    pub const fromInt = FlagsMixin(ViSurfaceCreateFlagsNN).fromInt;
+    pub const merge = FlagsMixin(ViSurfaceCreateFlagsNN).merge;
+    pub const intersect = FlagsMixin(ViSurfaceCreateFlagsNN).intersect;
+    pub const complement = FlagsMixin(ViSurfaceCreateFlagsNN).complement;
+    pub const subtract = FlagsMixin(ViSurfaceCreateFlagsNN).subtract;
+    pub const contains = FlagsMixin(ViSurfaceCreateFlagsNN).contains;
+    pub const format = FlagFormatMixin(ViSurfaceCreateFlagsNN).format;
 };
 pub const WaylandSurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(WaylandSurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(WaylandSurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(WaylandSurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(WaylandSurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(WaylandSurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(WaylandSurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(WaylandSurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(WaylandSurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(WaylandSurfaceCreateFlagsKHR).format;
 };
 pub const Win32SurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(Win32SurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(Win32SurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(Win32SurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(Win32SurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(Win32SurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(Win32SurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(Win32SurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(Win32SurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(Win32SurfaceCreateFlagsKHR).format;
 };
 pub const XlibSurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(XlibSurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(XlibSurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(XlibSurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(XlibSurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(XlibSurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(XlibSurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(XlibSurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(XlibSurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(XlibSurfaceCreateFlagsKHR).format;
 };
 pub const XcbSurfaceCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(XcbSurfaceCreateFlagsKHR);
+    pub const toInt = FlagsMixin(XcbSurfaceCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(XcbSurfaceCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(XcbSurfaceCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(XcbSurfaceCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(XcbSurfaceCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(XcbSurfaceCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(XcbSurfaceCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(XcbSurfaceCreateFlagsKHR).format;
 };
 pub const DirectFBSurfaceCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DirectFBSurfaceCreateFlagsEXT);
+    pub const toInt = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DirectFBSurfaceCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DirectFBSurfaceCreateFlagsEXT).format;
 };
 pub const IOSSurfaceCreateFlagsMVK = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(IOSSurfaceCreateFlagsMVK);
+    pub const toInt = FlagsMixin(IOSSurfaceCreateFlagsMVK).toInt;
+    pub const fromInt = FlagsMixin(IOSSurfaceCreateFlagsMVK).fromInt;
+    pub const merge = FlagsMixin(IOSSurfaceCreateFlagsMVK).merge;
+    pub const intersect = FlagsMixin(IOSSurfaceCreateFlagsMVK).intersect;
+    pub const complement = FlagsMixin(IOSSurfaceCreateFlagsMVK).complement;
+    pub const subtract = FlagsMixin(IOSSurfaceCreateFlagsMVK).subtract;
+    pub const contains = FlagsMixin(IOSSurfaceCreateFlagsMVK).contains;
+    pub const format = FlagFormatMixin(IOSSurfaceCreateFlagsMVK).format;
 };
 pub const MacOSSurfaceCreateFlagsMVK = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(MacOSSurfaceCreateFlagsMVK);
+    pub const toInt = FlagsMixin(MacOSSurfaceCreateFlagsMVK).toInt;
+    pub const fromInt = FlagsMixin(MacOSSurfaceCreateFlagsMVK).fromInt;
+    pub const merge = FlagsMixin(MacOSSurfaceCreateFlagsMVK).merge;
+    pub const intersect = FlagsMixin(MacOSSurfaceCreateFlagsMVK).intersect;
+    pub const complement = FlagsMixin(MacOSSurfaceCreateFlagsMVK).complement;
+    pub const subtract = FlagsMixin(MacOSSurfaceCreateFlagsMVK).subtract;
+    pub const contains = FlagsMixin(MacOSSurfaceCreateFlagsMVK).contains;
+    pub const format = FlagFormatMixin(MacOSSurfaceCreateFlagsMVK).format;
 };
 pub const MetalSurfaceCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(MetalSurfaceCreateFlagsEXT);
+    pub const toInt = FlagsMixin(MetalSurfaceCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(MetalSurfaceCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(MetalSurfaceCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(MetalSurfaceCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(MetalSurfaceCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(MetalSurfaceCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(MetalSurfaceCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(MetalSurfaceCreateFlagsEXT).format;
 };
 pub const ImagePipeSurfaceCreateFlagsFUCHSIA = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA);
+    pub const toInt = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).toInt;
+    pub const fromInt = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).fromInt;
+    pub const merge = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).merge;
+    pub const intersect = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).intersect;
+    pub const complement = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).complement;
+    pub const subtract = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).subtract;
+    pub const contains = FlagsMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).contains;
+    pub const format = FlagFormatMixin(ImagePipeSurfaceCreateFlagsFUCHSIA).format;
 };
 pub const StreamDescriptorSurfaceCreateFlagsGGP = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP);
+    pub const toInt = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).toInt;
+    pub const fromInt = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).fromInt;
+    pub const merge = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).merge;
+    pub const intersect = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).intersect;
+    pub const complement = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).complement;
+    pub const subtract = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).subtract;
+    pub const contains = FlagsMixin(StreamDescriptorSurfaceCreateFlagsGGP).contains;
+    pub const format = FlagFormatMixin(StreamDescriptorSurfaceCreateFlagsGGP).format;
 };
 pub const HeadlessSurfaceCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(HeadlessSurfaceCreateFlagsEXT);
+    pub const toInt = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(HeadlessSurfaceCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(HeadlessSurfaceCreateFlagsEXT).format;
 };
 pub const ScreenSurfaceCreateFlagsQNX = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ScreenSurfaceCreateFlagsQNX);
+    pub const toInt = FlagsMixin(ScreenSurfaceCreateFlagsQNX).toInt;
+    pub const fromInt = FlagsMixin(ScreenSurfaceCreateFlagsQNX).fromInt;
+    pub const merge = FlagsMixin(ScreenSurfaceCreateFlagsQNX).merge;
+    pub const intersect = FlagsMixin(ScreenSurfaceCreateFlagsQNX).intersect;
+    pub const complement = FlagsMixin(ScreenSurfaceCreateFlagsQNX).complement;
+    pub const subtract = FlagsMixin(ScreenSurfaceCreateFlagsQNX).subtract;
+    pub const contains = FlagsMixin(ScreenSurfaceCreateFlagsQNX).contains;
+    pub const format = FlagFormatMixin(ScreenSurfaceCreateFlagsQNX).format;
 };
 pub const PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
 pub const MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 pub const CommandPoolTrimFlags = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(CommandPoolTrimFlags);
+    pub const toInt = FlagsMixin(CommandPoolTrimFlags).toInt;
+    pub const fromInt = FlagsMixin(CommandPoolTrimFlags).fromInt;
+    pub const merge = FlagsMixin(CommandPoolTrimFlags).merge;
+    pub const intersect = FlagsMixin(CommandPoolTrimFlags).intersect;
+    pub const complement = FlagsMixin(CommandPoolTrimFlags).complement;
+    pub const subtract = FlagsMixin(CommandPoolTrimFlags).subtract;
+    pub const contains = FlagsMixin(CommandPoolTrimFlags).contains;
+    pub const format = FlagFormatMixin(CommandPoolTrimFlags).format;
 };
 pub const CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 pub const ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
@@ -341,79 +586,205 @@ pub const ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 pub const FenceImportFlagsKHR = FenceImportFlags;
 pub const PipelineViewportSwizzleStateCreateFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV);
+    pub const toInt = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).merge;
+    pub const intersect = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).intersect;
+    pub const complement = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).complement;
+    pub const subtract = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).subtract;
+    pub const contains = FlagsMixin(PipelineViewportSwizzleStateCreateFlagsNV).contains;
+    pub const format = FlagFormatMixin(PipelineViewportSwizzleStateCreateFlagsNV).format;
 };
 pub const PipelineDiscardRectangleStateCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT);
+    pub const toInt = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PipelineDiscardRectangleStateCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PipelineDiscardRectangleStateCreateFlagsEXT).format;
 };
 pub const PipelineCoverageToColorStateCreateFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV);
+    pub const toInt = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).merge;
+    pub const intersect = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).intersect;
+    pub const complement = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).complement;
+    pub const subtract = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).subtract;
+    pub const contains = FlagsMixin(PipelineCoverageToColorStateCreateFlagsNV).contains;
+    pub const format = FlagFormatMixin(PipelineCoverageToColorStateCreateFlagsNV).format;
 };
 pub const PipelineCoverageModulationStateCreateFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV);
+    pub const toInt = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).merge;
+    pub const intersect = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).intersect;
+    pub const complement = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).complement;
+    pub const subtract = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).subtract;
+    pub const contains = FlagsMixin(PipelineCoverageModulationStateCreateFlagsNV).contains;
+    pub const format = FlagFormatMixin(PipelineCoverageModulationStateCreateFlagsNV).format;
 };
 pub const PipelineCoverageReductionStateCreateFlagsNV = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV);
+    pub const toInt = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).merge;
+    pub const intersect = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).intersect;
+    pub const complement = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).complement;
+    pub const subtract = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).subtract;
+    pub const contains = FlagsMixin(PipelineCoverageReductionStateCreateFlagsNV).contains;
+    pub const format = FlagFormatMixin(PipelineCoverageReductionStateCreateFlagsNV).format;
 };
 pub const ValidationCacheCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ValidationCacheCreateFlagsEXT);
+    pub const toInt = FlagsMixin(ValidationCacheCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ValidationCacheCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ValidationCacheCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ValidationCacheCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ValidationCacheCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ValidationCacheCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ValidationCacheCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ValidationCacheCreateFlagsEXT).format;
 };
 pub const DebugUtilsMessengerCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DebugUtilsMessengerCreateFlagsEXT);
+    pub const toInt = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DebugUtilsMessengerCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DebugUtilsMessengerCreateFlagsEXT).format;
 };
 pub const DebugUtilsMessengerCallbackDataFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT);
+    pub const toInt = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DebugUtilsMessengerCallbackDataFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DebugUtilsMessengerCallbackDataFlagsEXT).format;
 };
 pub const DeviceMemoryReportFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(DeviceMemoryReportFlagsEXT);
+    pub const toInt = FlagsMixin(DeviceMemoryReportFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DeviceMemoryReportFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DeviceMemoryReportFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DeviceMemoryReportFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DeviceMemoryReportFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DeviceMemoryReportFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DeviceMemoryReportFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DeviceMemoryReportFlagsEXT).format;
 };
 pub const PipelineRasterizationConservativeStateCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT);
+    pub const toInt = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PipelineRasterizationConservativeStateCreateFlagsEXT).format;
 };
 pub const DescriptorBindingFlagsEXT = DescriptorBindingFlags;
 pub const ResolveModeFlagsKHR = ResolveModeFlags;
 pub const PipelineRasterizationStateStreamCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT);
+    pub const toInt = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PipelineRasterizationStateStreamCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PipelineRasterizationStateStreamCreateFlagsEXT).format;
 };
 pub const PipelineRasterizationDepthClipStateCreateFlagsEXT = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT);
+    pub const toInt = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PipelineRasterizationDepthClipStateCreateFlagsEXT).format;
 };
 pub const ToolPurposeFlagsEXT = ToolPurposeFlags;
 pub const SubmitFlagsKHR = SubmitFlags;
 pub const ImageFormatConstraintsFlagsFUCHSIA = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA);
+    pub const toInt = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).toInt;
+    pub const fromInt = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).fromInt;
+    pub const merge = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).merge;
+    pub const intersect = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).intersect;
+    pub const complement = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).complement;
+    pub const subtract = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).subtract;
+    pub const contains = FlagsMixin(ImageFormatConstraintsFlagsFUCHSIA).contains;
+    pub const format = FlagFormatMixin(ImageFormatConstraintsFlagsFUCHSIA).format;
 };
 pub const VideoSessionParametersCreateFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoSessionParametersCreateFlagsKHR);
+    pub const toInt = FlagsMixin(VideoSessionParametersCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoSessionParametersCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoSessionParametersCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoSessionParametersCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoSessionParametersCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoSessionParametersCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoSessionParametersCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoSessionParametersCreateFlagsKHR).format;
 };
 pub const VideoBeginCodingFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoBeginCodingFlagsKHR);
+    pub const toInt = FlagsMixin(VideoBeginCodingFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoBeginCodingFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoBeginCodingFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoBeginCodingFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoBeginCodingFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoBeginCodingFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoBeginCodingFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoBeginCodingFlagsKHR).format;
 };
 pub const VideoEndCodingFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoEndCodingFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEndCodingFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEndCodingFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEndCodingFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEndCodingFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEndCodingFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEndCodingFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEndCodingFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEndCodingFlagsKHR).format;
 };
 pub const VideoDecodeFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoDecodeFlagsKHR);
+    pub const toInt = FlagsMixin(VideoDecodeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoDecodeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoDecodeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoDecodeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoDecodeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoDecodeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoDecodeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoDecodeFlagsKHR).format;
 };
 pub const VideoEncodeRateControlFlagsKHR = packed struct {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoEncodeRateControlFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeRateControlFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeRateControlFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeRateControlFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeRateControlFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeRateControlFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeRateControlFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeRateControlFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeRateControlFlagsKHR).format;
 };
 pub const Instance = enum(usize) { null_handle = 0, _ };
 pub const PhysicalDevice = enum(usize) { null_handle = 0, _ };
@@ -8863,7 +9234,14 @@ pub const PipelineCacheCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineCacheCreateFlags);
+    pub const toInt = FlagsMixin(PipelineCacheCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineCacheCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineCacheCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineCacheCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineCacheCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineCacheCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineCacheCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineCacheCreateFlags).format;
 };
 pub const PrimitiveTopology = enum(i32) {
     point_list = 0,
@@ -10745,7 +11123,14 @@ pub const QueueFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(QueueFlags);
+    pub const toInt = FlagsMixin(QueueFlags).toInt;
+    pub const fromInt = FlagsMixin(QueueFlags).fromInt;
+    pub const merge = FlagsMixin(QueueFlags).merge;
+    pub const intersect = FlagsMixin(QueueFlags).intersect;
+    pub const complement = FlagsMixin(QueueFlags).complement;
+    pub const subtract = FlagsMixin(QueueFlags).subtract;
+    pub const contains = FlagsMixin(QueueFlags).contains;
+    pub const format = FlagFormatMixin(QueueFlags).format;
 };
 pub const CullModeFlags = packed struct(Flags) {
     front_bit: bool = false,
@@ -10780,7 +11165,14 @@ pub const CullModeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CullModeFlags);
+    pub const toInt = FlagsMixin(CullModeFlags).toInt;
+    pub const fromInt = FlagsMixin(CullModeFlags).fromInt;
+    pub const merge = FlagsMixin(CullModeFlags).merge;
+    pub const intersect = FlagsMixin(CullModeFlags).intersect;
+    pub const complement = FlagsMixin(CullModeFlags).complement;
+    pub const subtract = FlagsMixin(CullModeFlags).subtract;
+    pub const contains = FlagsMixin(CullModeFlags).contains;
+    pub const format = FlagFormatMixin(CullModeFlags).format;
 };
 pub const RenderPassCreateFlags = packed struct(Flags) {
     _reserved_bit_0: bool = false,
@@ -10815,7 +11207,14 @@ pub const RenderPassCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(RenderPassCreateFlags);
+    pub const toInt = FlagsMixin(RenderPassCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(RenderPassCreateFlags).fromInt;
+    pub const merge = FlagsMixin(RenderPassCreateFlags).merge;
+    pub const intersect = FlagsMixin(RenderPassCreateFlags).intersect;
+    pub const complement = FlagsMixin(RenderPassCreateFlags).complement;
+    pub const subtract = FlagsMixin(RenderPassCreateFlags).subtract;
+    pub const contains = FlagsMixin(RenderPassCreateFlags).contains;
+    pub const format = FlagFormatMixin(RenderPassCreateFlags).format;
 };
 pub const DeviceQueueCreateFlags = packed struct(Flags) {
     protected_bit: bool = false,
@@ -10850,7 +11249,14 @@ pub const DeviceQueueCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DeviceQueueCreateFlags);
+    pub const toInt = FlagsMixin(DeviceQueueCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(DeviceQueueCreateFlags).fromInt;
+    pub const merge = FlagsMixin(DeviceQueueCreateFlags).merge;
+    pub const intersect = FlagsMixin(DeviceQueueCreateFlags).intersect;
+    pub const complement = FlagsMixin(DeviceQueueCreateFlags).complement;
+    pub const subtract = FlagsMixin(DeviceQueueCreateFlags).subtract;
+    pub const contains = FlagsMixin(DeviceQueueCreateFlags).contains;
+    pub const format = FlagFormatMixin(DeviceQueueCreateFlags).format;
 };
 pub const MemoryPropertyFlags = packed struct(Flags) {
     device_local_bit: bool = false,
@@ -10885,7 +11291,14 @@ pub const MemoryPropertyFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MemoryPropertyFlags);
+    pub const toInt = FlagsMixin(MemoryPropertyFlags).toInt;
+    pub const fromInt = FlagsMixin(MemoryPropertyFlags).fromInt;
+    pub const merge = FlagsMixin(MemoryPropertyFlags).merge;
+    pub const intersect = FlagsMixin(MemoryPropertyFlags).intersect;
+    pub const complement = FlagsMixin(MemoryPropertyFlags).complement;
+    pub const subtract = FlagsMixin(MemoryPropertyFlags).subtract;
+    pub const contains = FlagsMixin(MemoryPropertyFlags).contains;
+    pub const format = FlagFormatMixin(MemoryPropertyFlags).format;
 };
 pub const MemoryHeapFlags = packed struct(Flags) {
     device_local_bit: bool = false,
@@ -10920,7 +11333,14 @@ pub const MemoryHeapFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MemoryHeapFlags);
+    pub const toInt = FlagsMixin(MemoryHeapFlags).toInt;
+    pub const fromInt = FlagsMixin(MemoryHeapFlags).fromInt;
+    pub const merge = FlagsMixin(MemoryHeapFlags).merge;
+    pub const intersect = FlagsMixin(MemoryHeapFlags).intersect;
+    pub const complement = FlagsMixin(MemoryHeapFlags).complement;
+    pub const subtract = FlagsMixin(MemoryHeapFlags).subtract;
+    pub const contains = FlagsMixin(MemoryHeapFlags).contains;
+    pub const format = FlagFormatMixin(MemoryHeapFlags).format;
 };
 pub const AccessFlags = packed struct(Flags) {
     indirect_command_read_bit: bool = false,
@@ -10955,7 +11375,14 @@ pub const AccessFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(AccessFlags);
+    pub const toInt = FlagsMixin(AccessFlags).toInt;
+    pub const fromInt = FlagsMixin(AccessFlags).fromInt;
+    pub const merge = FlagsMixin(AccessFlags).merge;
+    pub const intersect = FlagsMixin(AccessFlags).intersect;
+    pub const complement = FlagsMixin(AccessFlags).complement;
+    pub const subtract = FlagsMixin(AccessFlags).subtract;
+    pub const contains = FlagsMixin(AccessFlags).contains;
+    pub const format = FlagFormatMixin(AccessFlags).format;
 };
 pub const BufferUsageFlags = packed struct(Flags) {
     transfer_src_bit: bool = false,
@@ -10990,7 +11417,14 @@ pub const BufferUsageFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(BufferUsageFlags);
+    pub const toInt = FlagsMixin(BufferUsageFlags).toInt;
+    pub const fromInt = FlagsMixin(BufferUsageFlags).fromInt;
+    pub const merge = FlagsMixin(BufferUsageFlags).merge;
+    pub const intersect = FlagsMixin(BufferUsageFlags).intersect;
+    pub const complement = FlagsMixin(BufferUsageFlags).complement;
+    pub const subtract = FlagsMixin(BufferUsageFlags).subtract;
+    pub const contains = FlagsMixin(BufferUsageFlags).contains;
+    pub const format = FlagFormatMixin(BufferUsageFlags).format;
 };
 pub const BufferUsageFlags2KHR = packed struct(Flags64) {
     transfer_src_bit_khr: bool = false,
@@ -11057,7 +11491,14 @@ pub const BufferUsageFlags2KHR = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(BufferUsageFlags2KHR);
+    pub const toInt = FlagsMixin(BufferUsageFlags2KHR).toInt;
+    pub const fromInt = FlagsMixin(BufferUsageFlags2KHR).fromInt;
+    pub const merge = FlagsMixin(BufferUsageFlags2KHR).merge;
+    pub const intersect = FlagsMixin(BufferUsageFlags2KHR).intersect;
+    pub const complement = FlagsMixin(BufferUsageFlags2KHR).complement;
+    pub const subtract = FlagsMixin(BufferUsageFlags2KHR).subtract;
+    pub const contains = FlagsMixin(BufferUsageFlags2KHR).contains;
+    pub const format = FlagFormatMixin(BufferUsageFlags2KHR).format;
 };
 pub const BufferCreateFlags = packed struct(Flags) {
     sparse_binding_bit: bool = false,
@@ -11092,7 +11533,14 @@ pub const BufferCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(BufferCreateFlags);
+    pub const toInt = FlagsMixin(BufferCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(BufferCreateFlags).fromInt;
+    pub const merge = FlagsMixin(BufferCreateFlags).merge;
+    pub const intersect = FlagsMixin(BufferCreateFlags).intersect;
+    pub const complement = FlagsMixin(BufferCreateFlags).complement;
+    pub const subtract = FlagsMixin(BufferCreateFlags).subtract;
+    pub const contains = FlagsMixin(BufferCreateFlags).contains;
+    pub const format = FlagFormatMixin(BufferCreateFlags).format;
 };
 pub const ShaderStageFlags = packed struct(Flags) {
     vertex_bit: bool = false,
@@ -11127,7 +11575,14 @@ pub const ShaderStageFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ShaderStageFlags);
+    pub const toInt = FlagsMixin(ShaderStageFlags).toInt;
+    pub const fromInt = FlagsMixin(ShaderStageFlags).fromInt;
+    pub const merge = FlagsMixin(ShaderStageFlags).merge;
+    pub const intersect = FlagsMixin(ShaderStageFlags).intersect;
+    pub const complement = FlagsMixin(ShaderStageFlags).complement;
+    pub const subtract = FlagsMixin(ShaderStageFlags).subtract;
+    pub const contains = FlagsMixin(ShaderStageFlags).contains;
+    pub const format = FlagFormatMixin(ShaderStageFlags).format;
 };
 pub const ImageUsageFlags = packed struct(Flags) {
     transfer_src_bit: bool = false,
@@ -11162,7 +11617,14 @@ pub const ImageUsageFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageUsageFlags);
+    pub const toInt = FlagsMixin(ImageUsageFlags).toInt;
+    pub const fromInt = FlagsMixin(ImageUsageFlags).fromInt;
+    pub const merge = FlagsMixin(ImageUsageFlags).merge;
+    pub const intersect = FlagsMixin(ImageUsageFlags).intersect;
+    pub const complement = FlagsMixin(ImageUsageFlags).complement;
+    pub const subtract = FlagsMixin(ImageUsageFlags).subtract;
+    pub const contains = FlagsMixin(ImageUsageFlags).contains;
+    pub const format = FlagFormatMixin(ImageUsageFlags).format;
 };
 pub const ImageCreateFlags = packed struct(Flags) {
     sparse_binding_bit: bool = false,
@@ -11197,7 +11659,14 @@ pub const ImageCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageCreateFlags);
+    pub const toInt = FlagsMixin(ImageCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(ImageCreateFlags).fromInt;
+    pub const merge = FlagsMixin(ImageCreateFlags).merge;
+    pub const intersect = FlagsMixin(ImageCreateFlags).intersect;
+    pub const complement = FlagsMixin(ImageCreateFlags).complement;
+    pub const subtract = FlagsMixin(ImageCreateFlags).subtract;
+    pub const contains = FlagsMixin(ImageCreateFlags).contains;
+    pub const format = FlagFormatMixin(ImageCreateFlags).format;
 };
 pub const ImageViewCreateFlags = packed struct(Flags) {
     fragment_density_map_dynamic_bit_ext: bool = false,
@@ -11232,7 +11701,14 @@ pub const ImageViewCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageViewCreateFlags);
+    pub const toInt = FlagsMixin(ImageViewCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(ImageViewCreateFlags).fromInt;
+    pub const merge = FlagsMixin(ImageViewCreateFlags).merge;
+    pub const intersect = FlagsMixin(ImageViewCreateFlags).intersect;
+    pub const complement = FlagsMixin(ImageViewCreateFlags).complement;
+    pub const subtract = FlagsMixin(ImageViewCreateFlags).subtract;
+    pub const contains = FlagsMixin(ImageViewCreateFlags).contains;
+    pub const format = FlagFormatMixin(ImageViewCreateFlags).format;
 };
 pub const SamplerCreateFlags = packed struct(Flags) {
     subsampled_bit_ext: bool = false,
@@ -11267,7 +11743,14 @@ pub const SamplerCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SamplerCreateFlags);
+    pub const toInt = FlagsMixin(SamplerCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(SamplerCreateFlags).fromInt;
+    pub const merge = FlagsMixin(SamplerCreateFlags).merge;
+    pub const intersect = FlagsMixin(SamplerCreateFlags).intersect;
+    pub const complement = FlagsMixin(SamplerCreateFlags).complement;
+    pub const subtract = FlagsMixin(SamplerCreateFlags).subtract;
+    pub const contains = FlagsMixin(SamplerCreateFlags).contains;
+    pub const format = FlagFormatMixin(SamplerCreateFlags).format;
 };
 pub const PipelineCreateFlags = packed struct(Flags) {
     disable_optimization_bit: bool = false,
@@ -11302,7 +11785,14 @@ pub const PipelineCreateFlags = packed struct(Flags) {
     descriptor_buffer_bit_ext: bool = false,
     protected_access_only_bit_ext: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineCreateFlags);
+    pub const toInt = FlagsMixin(PipelineCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineCreateFlags).format;
 };
 pub const PipelineCreateFlags2KHR = packed struct(Flags64) {
     disable_optimization_bit_khr: bool = false,
@@ -11369,7 +11859,14 @@ pub const PipelineCreateFlags2KHR = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(PipelineCreateFlags2KHR);
+    pub const toInt = FlagsMixin(PipelineCreateFlags2KHR).toInt;
+    pub const fromInt = FlagsMixin(PipelineCreateFlags2KHR).fromInt;
+    pub const merge = FlagsMixin(PipelineCreateFlags2KHR).merge;
+    pub const intersect = FlagsMixin(PipelineCreateFlags2KHR).intersect;
+    pub const complement = FlagsMixin(PipelineCreateFlags2KHR).complement;
+    pub const subtract = FlagsMixin(PipelineCreateFlags2KHR).subtract;
+    pub const contains = FlagsMixin(PipelineCreateFlags2KHR).contains;
+    pub const format = FlagFormatMixin(PipelineCreateFlags2KHR).format;
 };
 pub const PipelineShaderStageCreateFlags = packed struct(Flags) {
     allow_varying_subgroup_size_bit: bool = false,
@@ -11404,7 +11901,14 @@ pub const PipelineShaderStageCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineShaderStageCreateFlags);
+    pub const toInt = FlagsMixin(PipelineShaderStageCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineShaderStageCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineShaderStageCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineShaderStageCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineShaderStageCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineShaderStageCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineShaderStageCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineShaderStageCreateFlags).format;
 };
 pub const ColorComponentFlags = packed struct(Flags) {
     r_bit: bool = false,
@@ -11439,7 +11943,14 @@ pub const ColorComponentFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ColorComponentFlags);
+    pub const toInt = FlagsMixin(ColorComponentFlags).toInt;
+    pub const fromInt = FlagsMixin(ColorComponentFlags).fromInt;
+    pub const merge = FlagsMixin(ColorComponentFlags).merge;
+    pub const intersect = FlagsMixin(ColorComponentFlags).intersect;
+    pub const complement = FlagsMixin(ColorComponentFlags).complement;
+    pub const subtract = FlagsMixin(ColorComponentFlags).subtract;
+    pub const contains = FlagsMixin(ColorComponentFlags).contains;
+    pub const format = FlagFormatMixin(ColorComponentFlags).format;
 };
 pub const FenceCreateFlags = packed struct(Flags) {
     signaled_bit: bool = false,
@@ -11474,7 +11985,14 @@ pub const FenceCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(FenceCreateFlags);
+    pub const toInt = FlagsMixin(FenceCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(FenceCreateFlags).fromInt;
+    pub const merge = FlagsMixin(FenceCreateFlags).merge;
+    pub const intersect = FlagsMixin(FenceCreateFlags).intersect;
+    pub const complement = FlagsMixin(FenceCreateFlags).complement;
+    pub const subtract = FlagsMixin(FenceCreateFlags).subtract;
+    pub const contains = FlagsMixin(FenceCreateFlags).contains;
+    pub const format = FlagFormatMixin(FenceCreateFlags).format;
 };
 pub const FormatFeatureFlags = packed struct(Flags) {
     sampled_image_bit: bool = false,
@@ -11509,7 +12027,14 @@ pub const FormatFeatureFlags = packed struct(Flags) {
     acceleration_structure_vertex_buffer_bit_khr: bool = false,
     fragment_shading_rate_attachment_bit_khr: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(FormatFeatureFlags);
+    pub const toInt = FlagsMixin(FormatFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(FormatFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(FormatFeatureFlags).merge;
+    pub const intersect = FlagsMixin(FormatFeatureFlags).intersect;
+    pub const complement = FlagsMixin(FormatFeatureFlags).complement;
+    pub const subtract = FlagsMixin(FormatFeatureFlags).subtract;
+    pub const contains = FlagsMixin(FormatFeatureFlags).contains;
+    pub const format = FlagFormatMixin(FormatFeatureFlags).format;
 };
 pub const QueryControlFlags = packed struct(Flags) {
     precise_bit: bool = false,
@@ -11544,7 +12069,14 @@ pub const QueryControlFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(QueryControlFlags);
+    pub const toInt = FlagsMixin(QueryControlFlags).toInt;
+    pub const fromInt = FlagsMixin(QueryControlFlags).fromInt;
+    pub const merge = FlagsMixin(QueryControlFlags).merge;
+    pub const intersect = FlagsMixin(QueryControlFlags).intersect;
+    pub const complement = FlagsMixin(QueryControlFlags).complement;
+    pub const subtract = FlagsMixin(QueryControlFlags).subtract;
+    pub const contains = FlagsMixin(QueryControlFlags).contains;
+    pub const format = FlagFormatMixin(QueryControlFlags).format;
 };
 pub const QueryResultFlags = packed struct(Flags) {
     @"64_bit": bool = false,
@@ -11579,7 +12111,14 @@ pub const QueryResultFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(QueryResultFlags);
+    pub const toInt = FlagsMixin(QueryResultFlags).toInt;
+    pub const fromInt = FlagsMixin(QueryResultFlags).fromInt;
+    pub const merge = FlagsMixin(QueryResultFlags).merge;
+    pub const intersect = FlagsMixin(QueryResultFlags).intersect;
+    pub const complement = FlagsMixin(QueryResultFlags).complement;
+    pub const subtract = FlagsMixin(QueryResultFlags).subtract;
+    pub const contains = FlagsMixin(QueryResultFlags).contains;
+    pub const format = FlagFormatMixin(QueryResultFlags).format;
 };
 pub const CommandBufferUsageFlags = packed struct(Flags) {
     one_time_submit_bit: bool = false,
@@ -11614,7 +12153,14 @@ pub const CommandBufferUsageFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CommandBufferUsageFlags);
+    pub const toInt = FlagsMixin(CommandBufferUsageFlags).toInt;
+    pub const fromInt = FlagsMixin(CommandBufferUsageFlags).fromInt;
+    pub const merge = FlagsMixin(CommandBufferUsageFlags).merge;
+    pub const intersect = FlagsMixin(CommandBufferUsageFlags).intersect;
+    pub const complement = FlagsMixin(CommandBufferUsageFlags).complement;
+    pub const subtract = FlagsMixin(CommandBufferUsageFlags).subtract;
+    pub const contains = FlagsMixin(CommandBufferUsageFlags).contains;
+    pub const format = FlagFormatMixin(CommandBufferUsageFlags).format;
 };
 pub const QueryPipelineStatisticFlags = packed struct(Flags) {
     input_assembly_vertices_bit: bool = false,
@@ -11649,7 +12195,14 @@ pub const QueryPipelineStatisticFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(QueryPipelineStatisticFlags);
+    pub const toInt = FlagsMixin(QueryPipelineStatisticFlags).toInt;
+    pub const fromInt = FlagsMixin(QueryPipelineStatisticFlags).fromInt;
+    pub const merge = FlagsMixin(QueryPipelineStatisticFlags).merge;
+    pub const intersect = FlagsMixin(QueryPipelineStatisticFlags).intersect;
+    pub const complement = FlagsMixin(QueryPipelineStatisticFlags).complement;
+    pub const subtract = FlagsMixin(QueryPipelineStatisticFlags).subtract;
+    pub const contains = FlagsMixin(QueryPipelineStatisticFlags).contains;
+    pub const format = FlagFormatMixin(QueryPipelineStatisticFlags).format;
 };
 pub const MemoryMapFlags = packed struct(Flags) {
     placed_bit_ext: bool = false,
@@ -11684,7 +12237,14 @@ pub const MemoryMapFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MemoryMapFlags);
+    pub const toInt = FlagsMixin(MemoryMapFlags).toInt;
+    pub const fromInt = FlagsMixin(MemoryMapFlags).fromInt;
+    pub const merge = FlagsMixin(MemoryMapFlags).merge;
+    pub const intersect = FlagsMixin(MemoryMapFlags).intersect;
+    pub const complement = FlagsMixin(MemoryMapFlags).complement;
+    pub const subtract = FlagsMixin(MemoryMapFlags).subtract;
+    pub const contains = FlagsMixin(MemoryMapFlags).contains;
+    pub const format = FlagFormatMixin(MemoryMapFlags).format;
 };
 pub const ImageAspectFlags = packed struct(Flags) {
     color_bit: bool = false,
@@ -11719,7 +12279,14 @@ pub const ImageAspectFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageAspectFlags);
+    pub const toInt = FlagsMixin(ImageAspectFlags).toInt;
+    pub const fromInt = FlagsMixin(ImageAspectFlags).fromInt;
+    pub const merge = FlagsMixin(ImageAspectFlags).merge;
+    pub const intersect = FlagsMixin(ImageAspectFlags).intersect;
+    pub const complement = FlagsMixin(ImageAspectFlags).complement;
+    pub const subtract = FlagsMixin(ImageAspectFlags).subtract;
+    pub const contains = FlagsMixin(ImageAspectFlags).contains;
+    pub const format = FlagFormatMixin(ImageAspectFlags).format;
 };
 pub const SparseImageFormatFlags = packed struct(Flags) {
     single_miptail_bit: bool = false,
@@ -11754,7 +12321,14 @@ pub const SparseImageFormatFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SparseImageFormatFlags);
+    pub const toInt = FlagsMixin(SparseImageFormatFlags).toInt;
+    pub const fromInt = FlagsMixin(SparseImageFormatFlags).fromInt;
+    pub const merge = FlagsMixin(SparseImageFormatFlags).merge;
+    pub const intersect = FlagsMixin(SparseImageFormatFlags).intersect;
+    pub const complement = FlagsMixin(SparseImageFormatFlags).complement;
+    pub const subtract = FlagsMixin(SparseImageFormatFlags).subtract;
+    pub const contains = FlagsMixin(SparseImageFormatFlags).contains;
+    pub const format = FlagFormatMixin(SparseImageFormatFlags).format;
 };
 pub const SparseMemoryBindFlags = packed struct(Flags) {
     metadata_bit: bool = false,
@@ -11789,7 +12363,14 @@ pub const SparseMemoryBindFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SparseMemoryBindFlags);
+    pub const toInt = FlagsMixin(SparseMemoryBindFlags).toInt;
+    pub const fromInt = FlagsMixin(SparseMemoryBindFlags).fromInt;
+    pub const merge = FlagsMixin(SparseMemoryBindFlags).merge;
+    pub const intersect = FlagsMixin(SparseMemoryBindFlags).intersect;
+    pub const complement = FlagsMixin(SparseMemoryBindFlags).complement;
+    pub const subtract = FlagsMixin(SparseMemoryBindFlags).subtract;
+    pub const contains = FlagsMixin(SparseMemoryBindFlags).contains;
+    pub const format = FlagFormatMixin(SparseMemoryBindFlags).format;
 };
 pub const PipelineStageFlags = packed struct(Flags) {
     top_of_pipe_bit: bool = false,
@@ -11824,7 +12405,14 @@ pub const PipelineStageFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineStageFlags);
+    pub const toInt = FlagsMixin(PipelineStageFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineStageFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineStageFlags).merge;
+    pub const intersect = FlagsMixin(PipelineStageFlags).intersect;
+    pub const complement = FlagsMixin(PipelineStageFlags).complement;
+    pub const subtract = FlagsMixin(PipelineStageFlags).subtract;
+    pub const contains = FlagsMixin(PipelineStageFlags).contains;
+    pub const format = FlagFormatMixin(PipelineStageFlags).format;
 };
 pub const CommandPoolCreateFlags = packed struct(Flags) {
     transient_bit: bool = false,
@@ -11859,7 +12447,14 @@ pub const CommandPoolCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CommandPoolCreateFlags);
+    pub const toInt = FlagsMixin(CommandPoolCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(CommandPoolCreateFlags).fromInt;
+    pub const merge = FlagsMixin(CommandPoolCreateFlags).merge;
+    pub const intersect = FlagsMixin(CommandPoolCreateFlags).intersect;
+    pub const complement = FlagsMixin(CommandPoolCreateFlags).complement;
+    pub const subtract = FlagsMixin(CommandPoolCreateFlags).subtract;
+    pub const contains = FlagsMixin(CommandPoolCreateFlags).contains;
+    pub const format = FlagFormatMixin(CommandPoolCreateFlags).format;
 };
 pub const CommandPoolResetFlags = packed struct(Flags) {
     release_resources_bit: bool = false,
@@ -11894,7 +12489,14 @@ pub const CommandPoolResetFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CommandPoolResetFlags);
+    pub const toInt = FlagsMixin(CommandPoolResetFlags).toInt;
+    pub const fromInt = FlagsMixin(CommandPoolResetFlags).fromInt;
+    pub const merge = FlagsMixin(CommandPoolResetFlags).merge;
+    pub const intersect = FlagsMixin(CommandPoolResetFlags).intersect;
+    pub const complement = FlagsMixin(CommandPoolResetFlags).complement;
+    pub const subtract = FlagsMixin(CommandPoolResetFlags).subtract;
+    pub const contains = FlagsMixin(CommandPoolResetFlags).contains;
+    pub const format = FlagFormatMixin(CommandPoolResetFlags).format;
 };
 pub const CommandBufferResetFlags = packed struct(Flags) {
     release_resources_bit: bool = false,
@@ -11929,7 +12531,14 @@ pub const CommandBufferResetFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CommandBufferResetFlags);
+    pub const toInt = FlagsMixin(CommandBufferResetFlags).toInt;
+    pub const fromInt = FlagsMixin(CommandBufferResetFlags).fromInt;
+    pub const merge = FlagsMixin(CommandBufferResetFlags).merge;
+    pub const intersect = FlagsMixin(CommandBufferResetFlags).intersect;
+    pub const complement = FlagsMixin(CommandBufferResetFlags).complement;
+    pub const subtract = FlagsMixin(CommandBufferResetFlags).subtract;
+    pub const contains = FlagsMixin(CommandBufferResetFlags).contains;
+    pub const format = FlagFormatMixin(CommandBufferResetFlags).format;
 };
 pub const SampleCountFlags = packed struct(Flags) {
     @"1_bit": bool = false,
@@ -11964,7 +12573,14 @@ pub const SampleCountFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SampleCountFlags);
+    pub const toInt = FlagsMixin(SampleCountFlags).toInt;
+    pub const fromInt = FlagsMixin(SampleCountFlags).fromInt;
+    pub const merge = FlagsMixin(SampleCountFlags).merge;
+    pub const intersect = FlagsMixin(SampleCountFlags).intersect;
+    pub const complement = FlagsMixin(SampleCountFlags).complement;
+    pub const subtract = FlagsMixin(SampleCountFlags).subtract;
+    pub const contains = FlagsMixin(SampleCountFlags).contains;
+    pub const format = FlagFormatMixin(SampleCountFlags).format;
 };
 pub const AttachmentDescriptionFlags = packed struct(Flags) {
     may_alias_bit: bool = false,
@@ -11999,7 +12615,14 @@ pub const AttachmentDescriptionFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(AttachmentDescriptionFlags);
+    pub const toInt = FlagsMixin(AttachmentDescriptionFlags).toInt;
+    pub const fromInt = FlagsMixin(AttachmentDescriptionFlags).fromInt;
+    pub const merge = FlagsMixin(AttachmentDescriptionFlags).merge;
+    pub const intersect = FlagsMixin(AttachmentDescriptionFlags).intersect;
+    pub const complement = FlagsMixin(AttachmentDescriptionFlags).complement;
+    pub const subtract = FlagsMixin(AttachmentDescriptionFlags).subtract;
+    pub const contains = FlagsMixin(AttachmentDescriptionFlags).contains;
+    pub const format = FlagFormatMixin(AttachmentDescriptionFlags).format;
 };
 pub const StencilFaceFlags = packed struct(Flags) {
     front_bit: bool = false,
@@ -12034,7 +12657,14 @@ pub const StencilFaceFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(StencilFaceFlags);
+    pub const toInt = FlagsMixin(StencilFaceFlags).toInt;
+    pub const fromInt = FlagsMixin(StencilFaceFlags).fromInt;
+    pub const merge = FlagsMixin(StencilFaceFlags).merge;
+    pub const intersect = FlagsMixin(StencilFaceFlags).intersect;
+    pub const complement = FlagsMixin(StencilFaceFlags).complement;
+    pub const subtract = FlagsMixin(StencilFaceFlags).subtract;
+    pub const contains = FlagsMixin(StencilFaceFlags).contains;
+    pub const format = FlagFormatMixin(StencilFaceFlags).format;
 };
 pub const DescriptorPoolCreateFlags = packed struct(Flags) {
     free_descriptor_set_bit: bool = false,
@@ -12069,7 +12699,14 @@ pub const DescriptorPoolCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DescriptorPoolCreateFlags);
+    pub const toInt = FlagsMixin(DescriptorPoolCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(DescriptorPoolCreateFlags).fromInt;
+    pub const merge = FlagsMixin(DescriptorPoolCreateFlags).merge;
+    pub const intersect = FlagsMixin(DescriptorPoolCreateFlags).intersect;
+    pub const complement = FlagsMixin(DescriptorPoolCreateFlags).complement;
+    pub const subtract = FlagsMixin(DescriptorPoolCreateFlags).subtract;
+    pub const contains = FlagsMixin(DescriptorPoolCreateFlags).contains;
+    pub const format = FlagFormatMixin(DescriptorPoolCreateFlags).format;
 };
 pub const DependencyFlags = packed struct(Flags) {
     by_region_bit: bool = false,
@@ -12104,7 +12741,14 @@ pub const DependencyFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DependencyFlags);
+    pub const toInt = FlagsMixin(DependencyFlags).toInt;
+    pub const fromInt = FlagsMixin(DependencyFlags).fromInt;
+    pub const merge = FlagsMixin(DependencyFlags).merge;
+    pub const intersect = FlagsMixin(DependencyFlags).intersect;
+    pub const complement = FlagsMixin(DependencyFlags).complement;
+    pub const subtract = FlagsMixin(DependencyFlags).subtract;
+    pub const contains = FlagsMixin(DependencyFlags).contains;
+    pub const format = FlagFormatMixin(DependencyFlags).format;
 };
 pub const SemaphoreType = enum(i32) {
     binary = 0,
@@ -12146,7 +12790,14 @@ pub const SemaphoreWaitFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SemaphoreWaitFlags);
+    pub const toInt = FlagsMixin(SemaphoreWaitFlags).toInt;
+    pub const fromInt = FlagsMixin(SemaphoreWaitFlags).fromInt;
+    pub const merge = FlagsMixin(SemaphoreWaitFlags).merge;
+    pub const intersect = FlagsMixin(SemaphoreWaitFlags).intersect;
+    pub const complement = FlagsMixin(SemaphoreWaitFlags).complement;
+    pub const subtract = FlagsMixin(SemaphoreWaitFlags).subtract;
+    pub const contains = FlagsMixin(SemaphoreWaitFlags).contains;
+    pub const format = FlagFormatMixin(SemaphoreWaitFlags).format;
 };
 pub const PresentModeKHR = enum(i32) {
     immediate_khr = 0,
@@ -12211,7 +12862,14 @@ pub const DisplayPlaneAlphaFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DisplayPlaneAlphaFlagsKHR);
+    pub const toInt = FlagsMixin(DisplayPlaneAlphaFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(DisplayPlaneAlphaFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(DisplayPlaneAlphaFlagsKHR).merge;
+    pub const intersect = FlagsMixin(DisplayPlaneAlphaFlagsKHR).intersect;
+    pub const complement = FlagsMixin(DisplayPlaneAlphaFlagsKHR).complement;
+    pub const subtract = FlagsMixin(DisplayPlaneAlphaFlagsKHR).subtract;
+    pub const contains = FlagsMixin(DisplayPlaneAlphaFlagsKHR).contains;
+    pub const format = FlagFormatMixin(DisplayPlaneAlphaFlagsKHR).format;
 };
 pub const CompositeAlphaFlagsKHR = packed struct(Flags) {
     opaque_bit_khr: bool = false,
@@ -12246,7 +12904,14 @@ pub const CompositeAlphaFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(CompositeAlphaFlagsKHR);
+    pub const toInt = FlagsMixin(CompositeAlphaFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(CompositeAlphaFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(CompositeAlphaFlagsKHR).merge;
+    pub const intersect = FlagsMixin(CompositeAlphaFlagsKHR).intersect;
+    pub const complement = FlagsMixin(CompositeAlphaFlagsKHR).complement;
+    pub const subtract = FlagsMixin(CompositeAlphaFlagsKHR).subtract;
+    pub const contains = FlagsMixin(CompositeAlphaFlagsKHR).contains;
+    pub const format = FlagFormatMixin(CompositeAlphaFlagsKHR).format;
 };
 pub const SurfaceTransformFlagsKHR = packed struct(Flags) {
     identity_bit_khr: bool = false,
@@ -12281,7 +12946,14 @@ pub const SurfaceTransformFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SurfaceTransformFlagsKHR);
+    pub const toInt = FlagsMixin(SurfaceTransformFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(SurfaceTransformFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(SurfaceTransformFlagsKHR).merge;
+    pub const intersect = FlagsMixin(SurfaceTransformFlagsKHR).intersect;
+    pub const complement = FlagsMixin(SurfaceTransformFlagsKHR).complement;
+    pub const subtract = FlagsMixin(SurfaceTransformFlagsKHR).subtract;
+    pub const contains = FlagsMixin(SurfaceTransformFlagsKHR).contains;
+    pub const format = FlagFormatMixin(SurfaceTransformFlagsKHR).format;
 };
 pub const SwapchainImageUsageFlagsANDROID = packed struct(Flags) {
     shared_bit_android: bool = false,
@@ -12316,7 +12988,14 @@ pub const SwapchainImageUsageFlagsANDROID = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SwapchainImageUsageFlagsANDROID);
+    pub const toInt = FlagsMixin(SwapchainImageUsageFlagsANDROID).toInt;
+    pub const fromInt = FlagsMixin(SwapchainImageUsageFlagsANDROID).fromInt;
+    pub const merge = FlagsMixin(SwapchainImageUsageFlagsANDROID).merge;
+    pub const intersect = FlagsMixin(SwapchainImageUsageFlagsANDROID).intersect;
+    pub const complement = FlagsMixin(SwapchainImageUsageFlagsANDROID).complement;
+    pub const subtract = FlagsMixin(SwapchainImageUsageFlagsANDROID).subtract;
+    pub const contains = FlagsMixin(SwapchainImageUsageFlagsANDROID).contains;
+    pub const format = FlagFormatMixin(SwapchainImageUsageFlagsANDROID).format;
 };
 pub const TimeDomainKHR = enum(i32) {
     device_khr = 0,
@@ -12362,7 +13041,14 @@ pub const DebugReportFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DebugReportFlagsEXT);
+    pub const toInt = FlagsMixin(DebugReportFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DebugReportFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DebugReportFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DebugReportFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DebugReportFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DebugReportFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DebugReportFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DebugReportFlagsEXT).format;
 };
 pub const DebugReportObjectTypeEXT = enum(i32) {
     unknown_ext = 0,
@@ -12458,7 +13144,14 @@ pub const ExternalMemoryHandleTypeFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalMemoryHandleTypeFlagsNV);
+    pub const toInt = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).fromInt;
+    pub const merge = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).merge;
+    pub const intersect = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).intersect;
+    pub const complement = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).complement;
+    pub const subtract = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).subtract;
+    pub const contains = FlagsMixin(ExternalMemoryHandleTypeFlagsNV).contains;
+    pub const format = FlagFormatMixin(ExternalMemoryHandleTypeFlagsNV).format;
 };
 pub const ExternalMemoryFeatureFlagsNV = packed struct(Flags) {
     dedicated_only_bit_nv: bool = false,
@@ -12493,7 +13186,14 @@ pub const ExternalMemoryFeatureFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalMemoryFeatureFlagsNV);
+    pub const toInt = FlagsMixin(ExternalMemoryFeatureFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(ExternalMemoryFeatureFlagsNV).fromInt;
+    pub const merge = FlagsMixin(ExternalMemoryFeatureFlagsNV).merge;
+    pub const intersect = FlagsMixin(ExternalMemoryFeatureFlagsNV).intersect;
+    pub const complement = FlagsMixin(ExternalMemoryFeatureFlagsNV).complement;
+    pub const subtract = FlagsMixin(ExternalMemoryFeatureFlagsNV).subtract;
+    pub const contains = FlagsMixin(ExternalMemoryFeatureFlagsNV).contains;
+    pub const format = FlagFormatMixin(ExternalMemoryFeatureFlagsNV).format;
 };
 pub const ValidationCheckEXT = enum(i32) {
     all_ext = 0,
@@ -12563,7 +13263,14 @@ pub const SubgroupFeatureFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SubgroupFeatureFlags);
+    pub const toInt = FlagsMixin(SubgroupFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(SubgroupFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(SubgroupFeatureFlags).merge;
+    pub const intersect = FlagsMixin(SubgroupFeatureFlags).intersect;
+    pub const complement = FlagsMixin(SubgroupFeatureFlags).complement;
+    pub const subtract = FlagsMixin(SubgroupFeatureFlags).subtract;
+    pub const contains = FlagsMixin(SubgroupFeatureFlags).contains;
+    pub const format = FlagFormatMixin(SubgroupFeatureFlags).format;
 };
 pub const IndirectCommandsLayoutUsageFlagsNV = packed struct(Flags) {
     explicit_preprocess_bit_nv: bool = false,
@@ -12598,7 +13305,14 @@ pub const IndirectCommandsLayoutUsageFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(IndirectCommandsLayoutUsageFlagsNV);
+    pub const toInt = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).fromInt;
+    pub const merge = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).merge;
+    pub const intersect = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).intersect;
+    pub const complement = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).complement;
+    pub const subtract = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).subtract;
+    pub const contains = FlagsMixin(IndirectCommandsLayoutUsageFlagsNV).contains;
+    pub const format = FlagFormatMixin(IndirectCommandsLayoutUsageFlagsNV).format;
 };
 pub const IndirectStateFlagsNV = packed struct(Flags) {
     flag_frontface_bit_nv: bool = false,
@@ -12633,7 +13347,14 @@ pub const IndirectStateFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(IndirectStateFlagsNV);
+    pub const toInt = FlagsMixin(IndirectStateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(IndirectStateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(IndirectStateFlagsNV).merge;
+    pub const intersect = FlagsMixin(IndirectStateFlagsNV).intersect;
+    pub const complement = FlagsMixin(IndirectStateFlagsNV).complement;
+    pub const subtract = FlagsMixin(IndirectStateFlagsNV).subtract;
+    pub const contains = FlagsMixin(IndirectStateFlagsNV).contains;
+    pub const format = FlagFormatMixin(IndirectStateFlagsNV).format;
 };
 pub const IndirectCommandsTokenTypeNV = enum(i32) {
     shader_group_nv = 0,
@@ -12682,7 +13403,14 @@ pub const DescriptorSetLayoutCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DescriptorSetLayoutCreateFlags);
+    pub const toInt = FlagsMixin(DescriptorSetLayoutCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(DescriptorSetLayoutCreateFlags).fromInt;
+    pub const merge = FlagsMixin(DescriptorSetLayoutCreateFlags).merge;
+    pub const intersect = FlagsMixin(DescriptorSetLayoutCreateFlags).intersect;
+    pub const complement = FlagsMixin(DescriptorSetLayoutCreateFlags).complement;
+    pub const subtract = FlagsMixin(DescriptorSetLayoutCreateFlags).subtract;
+    pub const contains = FlagsMixin(DescriptorSetLayoutCreateFlags).contains;
+    pub const format = FlagFormatMixin(DescriptorSetLayoutCreateFlags).format;
 };
 pub const ExternalMemoryHandleTypeFlags = packed struct(Flags) {
     opaque_fd_bit: bool = false,
@@ -12717,7 +13445,14 @@ pub const ExternalMemoryHandleTypeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalMemoryHandleTypeFlags);
+    pub const toInt = FlagsMixin(ExternalMemoryHandleTypeFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalMemoryHandleTypeFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalMemoryHandleTypeFlags).merge;
+    pub const intersect = FlagsMixin(ExternalMemoryHandleTypeFlags).intersect;
+    pub const complement = FlagsMixin(ExternalMemoryHandleTypeFlags).complement;
+    pub const subtract = FlagsMixin(ExternalMemoryHandleTypeFlags).subtract;
+    pub const contains = FlagsMixin(ExternalMemoryHandleTypeFlags).contains;
+    pub const format = FlagFormatMixin(ExternalMemoryHandleTypeFlags).format;
 };
 pub const ExternalMemoryFeatureFlags = packed struct(Flags) {
     dedicated_only_bit: bool = false,
@@ -12752,7 +13487,14 @@ pub const ExternalMemoryFeatureFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalMemoryFeatureFlags);
+    pub const toInt = FlagsMixin(ExternalMemoryFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalMemoryFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalMemoryFeatureFlags).merge;
+    pub const intersect = FlagsMixin(ExternalMemoryFeatureFlags).intersect;
+    pub const complement = FlagsMixin(ExternalMemoryFeatureFlags).complement;
+    pub const subtract = FlagsMixin(ExternalMemoryFeatureFlags).subtract;
+    pub const contains = FlagsMixin(ExternalMemoryFeatureFlags).contains;
+    pub const format = FlagFormatMixin(ExternalMemoryFeatureFlags).format;
 };
 pub const ExternalSemaphoreHandleTypeFlags = packed struct(Flags) {
     opaque_fd_bit: bool = false,
@@ -12787,7 +13529,14 @@ pub const ExternalSemaphoreHandleTypeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalSemaphoreHandleTypeFlags);
+    pub const toInt = FlagsMixin(ExternalSemaphoreHandleTypeFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalSemaphoreHandleTypeFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalSemaphoreHandleTypeFlags).merge;
+    pub const intersect = FlagsMixin(ExternalSemaphoreHandleTypeFlags).intersect;
+    pub const complement = FlagsMixin(ExternalSemaphoreHandleTypeFlags).complement;
+    pub const subtract = FlagsMixin(ExternalSemaphoreHandleTypeFlags).subtract;
+    pub const contains = FlagsMixin(ExternalSemaphoreHandleTypeFlags).contains;
+    pub const format = FlagFormatMixin(ExternalSemaphoreHandleTypeFlags).format;
 };
 pub const ExternalSemaphoreFeatureFlags = packed struct(Flags) {
     exportable_bit: bool = false,
@@ -12822,7 +13571,14 @@ pub const ExternalSemaphoreFeatureFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalSemaphoreFeatureFlags);
+    pub const toInt = FlagsMixin(ExternalSemaphoreFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalSemaphoreFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalSemaphoreFeatureFlags).merge;
+    pub const intersect = FlagsMixin(ExternalSemaphoreFeatureFlags).intersect;
+    pub const complement = FlagsMixin(ExternalSemaphoreFeatureFlags).complement;
+    pub const subtract = FlagsMixin(ExternalSemaphoreFeatureFlags).subtract;
+    pub const contains = FlagsMixin(ExternalSemaphoreFeatureFlags).contains;
+    pub const format = FlagFormatMixin(ExternalSemaphoreFeatureFlags).format;
 };
 pub const SemaphoreImportFlags = packed struct(Flags) {
     temporary_bit: bool = false,
@@ -12857,7 +13613,14 @@ pub const SemaphoreImportFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SemaphoreImportFlags);
+    pub const toInt = FlagsMixin(SemaphoreImportFlags).toInt;
+    pub const fromInt = FlagsMixin(SemaphoreImportFlags).fromInt;
+    pub const merge = FlagsMixin(SemaphoreImportFlags).merge;
+    pub const intersect = FlagsMixin(SemaphoreImportFlags).intersect;
+    pub const complement = FlagsMixin(SemaphoreImportFlags).complement;
+    pub const subtract = FlagsMixin(SemaphoreImportFlags).subtract;
+    pub const contains = FlagsMixin(SemaphoreImportFlags).contains;
+    pub const format = FlagFormatMixin(SemaphoreImportFlags).format;
 };
 pub const ExternalFenceHandleTypeFlags = packed struct(Flags) {
     opaque_fd_bit: bool = false,
@@ -12892,7 +13655,14 @@ pub const ExternalFenceHandleTypeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalFenceHandleTypeFlags);
+    pub const toInt = FlagsMixin(ExternalFenceHandleTypeFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalFenceHandleTypeFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalFenceHandleTypeFlags).merge;
+    pub const intersect = FlagsMixin(ExternalFenceHandleTypeFlags).intersect;
+    pub const complement = FlagsMixin(ExternalFenceHandleTypeFlags).complement;
+    pub const subtract = FlagsMixin(ExternalFenceHandleTypeFlags).subtract;
+    pub const contains = FlagsMixin(ExternalFenceHandleTypeFlags).contains;
+    pub const format = FlagFormatMixin(ExternalFenceHandleTypeFlags).format;
 };
 pub const ExternalFenceFeatureFlags = packed struct(Flags) {
     exportable_bit: bool = false,
@@ -12927,7 +13697,14 @@ pub const ExternalFenceFeatureFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExternalFenceFeatureFlags);
+    pub const toInt = FlagsMixin(ExternalFenceFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(ExternalFenceFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(ExternalFenceFeatureFlags).merge;
+    pub const intersect = FlagsMixin(ExternalFenceFeatureFlags).intersect;
+    pub const complement = FlagsMixin(ExternalFenceFeatureFlags).complement;
+    pub const subtract = FlagsMixin(ExternalFenceFeatureFlags).subtract;
+    pub const contains = FlagsMixin(ExternalFenceFeatureFlags).contains;
+    pub const format = FlagFormatMixin(ExternalFenceFeatureFlags).format;
 };
 pub const FenceImportFlags = packed struct(Flags) {
     temporary_bit: bool = false,
@@ -12962,7 +13739,14 @@ pub const FenceImportFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(FenceImportFlags);
+    pub const toInt = FlagsMixin(FenceImportFlags).toInt;
+    pub const fromInt = FlagsMixin(FenceImportFlags).fromInt;
+    pub const merge = FlagsMixin(FenceImportFlags).merge;
+    pub const intersect = FlagsMixin(FenceImportFlags).intersect;
+    pub const complement = FlagsMixin(FenceImportFlags).complement;
+    pub const subtract = FlagsMixin(FenceImportFlags).subtract;
+    pub const contains = FlagsMixin(FenceImportFlags).contains;
+    pub const format = FlagFormatMixin(FenceImportFlags).format;
 };
 pub const SurfaceCounterFlagsEXT = packed struct(Flags) {
     vblank_bit_ext: bool = false,
@@ -12997,7 +13781,14 @@ pub const SurfaceCounterFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SurfaceCounterFlagsEXT);
+    pub const toInt = FlagsMixin(SurfaceCounterFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(SurfaceCounterFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(SurfaceCounterFlagsEXT).merge;
+    pub const intersect = FlagsMixin(SurfaceCounterFlagsEXT).intersect;
+    pub const complement = FlagsMixin(SurfaceCounterFlagsEXT).complement;
+    pub const subtract = FlagsMixin(SurfaceCounterFlagsEXT).subtract;
+    pub const contains = FlagsMixin(SurfaceCounterFlagsEXT).contains;
+    pub const format = FlagFormatMixin(SurfaceCounterFlagsEXT).format;
 };
 pub const DisplayPowerStateEXT = enum(i32) {
     off_ext = 0,
@@ -13046,7 +13837,14 @@ pub const PeerMemoryFeatureFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PeerMemoryFeatureFlags);
+    pub const toInt = FlagsMixin(PeerMemoryFeatureFlags).toInt;
+    pub const fromInt = FlagsMixin(PeerMemoryFeatureFlags).fromInt;
+    pub const merge = FlagsMixin(PeerMemoryFeatureFlags).merge;
+    pub const intersect = FlagsMixin(PeerMemoryFeatureFlags).intersect;
+    pub const complement = FlagsMixin(PeerMemoryFeatureFlags).complement;
+    pub const subtract = FlagsMixin(PeerMemoryFeatureFlags).subtract;
+    pub const contains = FlagsMixin(PeerMemoryFeatureFlags).contains;
+    pub const format = FlagFormatMixin(PeerMemoryFeatureFlags).format;
 };
 pub const MemoryAllocateFlags = packed struct(Flags) {
     device_mask_bit: bool = false,
@@ -13081,7 +13879,14 @@ pub const MemoryAllocateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MemoryAllocateFlags);
+    pub const toInt = FlagsMixin(MemoryAllocateFlags).toInt;
+    pub const fromInt = FlagsMixin(MemoryAllocateFlags).fromInt;
+    pub const merge = FlagsMixin(MemoryAllocateFlags).merge;
+    pub const intersect = FlagsMixin(MemoryAllocateFlags).intersect;
+    pub const complement = FlagsMixin(MemoryAllocateFlags).complement;
+    pub const subtract = FlagsMixin(MemoryAllocateFlags).subtract;
+    pub const contains = FlagsMixin(MemoryAllocateFlags).contains;
+    pub const format = FlagFormatMixin(MemoryAllocateFlags).format;
 };
 pub const DeviceGroupPresentModeFlagsKHR = packed struct(Flags) {
     local_bit_khr: bool = false,
@@ -13116,7 +13921,14 @@ pub const DeviceGroupPresentModeFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DeviceGroupPresentModeFlagsKHR);
+    pub const toInt = FlagsMixin(DeviceGroupPresentModeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(DeviceGroupPresentModeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(DeviceGroupPresentModeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(DeviceGroupPresentModeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(DeviceGroupPresentModeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(DeviceGroupPresentModeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(DeviceGroupPresentModeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(DeviceGroupPresentModeFlagsKHR).format;
 };
 pub const SwapchainCreateFlagsKHR = packed struct(Flags) {
     split_instance_bind_regions_bit_khr: bool = false,
@@ -13151,7 +13963,14 @@ pub const SwapchainCreateFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SwapchainCreateFlagsKHR);
+    pub const toInt = FlagsMixin(SwapchainCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(SwapchainCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(SwapchainCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(SwapchainCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(SwapchainCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(SwapchainCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(SwapchainCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(SwapchainCreateFlagsKHR).format;
 };
 pub const ViewportCoordinateSwizzleNV = enum(i32) {
     positive_x_nv = 0,
@@ -13202,7 +14021,14 @@ pub const SubpassDescriptionFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SubpassDescriptionFlags);
+    pub const toInt = FlagsMixin(SubpassDescriptionFlags).toInt;
+    pub const fromInt = FlagsMixin(SubpassDescriptionFlags).fromInt;
+    pub const merge = FlagsMixin(SubpassDescriptionFlags).merge;
+    pub const intersect = FlagsMixin(SubpassDescriptionFlags).intersect;
+    pub const complement = FlagsMixin(SubpassDescriptionFlags).complement;
+    pub const subtract = FlagsMixin(SubpassDescriptionFlags).subtract;
+    pub const contains = FlagsMixin(SubpassDescriptionFlags).contains;
+    pub const format = FlagFormatMixin(SubpassDescriptionFlags).format;
 };
 pub const PointClippingBehavior = enum(i32) {
     all_clip_planes = 0,
@@ -13327,7 +14153,14 @@ pub const DebugUtilsMessageSeverityFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DebugUtilsMessageSeverityFlagsEXT);
+    pub const toInt = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DebugUtilsMessageSeverityFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DebugUtilsMessageSeverityFlagsEXT).format;
 };
 pub const DebugUtilsMessageTypeFlagsEXT = packed struct(Flags) {
     general_bit_ext: bool = false,
@@ -13362,7 +14195,14 @@ pub const DebugUtilsMessageTypeFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DebugUtilsMessageTypeFlagsEXT);
+    pub const toInt = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DebugUtilsMessageTypeFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DebugUtilsMessageTypeFlagsEXT).format;
 };
 pub const ConservativeRasterizationModeEXT = enum(i32) {
     disabled_ext = 0,
@@ -13403,7 +14243,14 @@ pub const DescriptorBindingFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DescriptorBindingFlags);
+    pub const toInt = FlagsMixin(DescriptorBindingFlags).toInt;
+    pub const fromInt = FlagsMixin(DescriptorBindingFlags).fromInt;
+    pub const merge = FlagsMixin(DescriptorBindingFlags).merge;
+    pub const intersect = FlagsMixin(DescriptorBindingFlags).intersect;
+    pub const complement = FlagsMixin(DescriptorBindingFlags).complement;
+    pub const subtract = FlagsMixin(DescriptorBindingFlags).subtract;
+    pub const contains = FlagsMixin(DescriptorBindingFlags).contains;
+    pub const format = FlagFormatMixin(DescriptorBindingFlags).format;
 };
 pub const VendorId = enum(i32) {
     khronos = 0x10000,
@@ -13491,7 +14338,14 @@ pub const ConditionalRenderingFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ConditionalRenderingFlagsEXT);
+    pub const toInt = FlagsMixin(ConditionalRenderingFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ConditionalRenderingFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ConditionalRenderingFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ConditionalRenderingFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ConditionalRenderingFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ConditionalRenderingFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ConditionalRenderingFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ConditionalRenderingFlagsEXT).format;
 };
 pub const ResolveModeFlags = packed struct(Flags) {
     sample_zero_bit: bool = false,
@@ -13526,7 +14380,14 @@ pub const ResolveModeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ResolveModeFlags);
+    pub const toInt = FlagsMixin(ResolveModeFlags).toInt;
+    pub const fromInt = FlagsMixin(ResolveModeFlags).fromInt;
+    pub const merge = FlagsMixin(ResolveModeFlags).merge;
+    pub const intersect = FlagsMixin(ResolveModeFlags).intersect;
+    pub const complement = FlagsMixin(ResolveModeFlags).complement;
+    pub const subtract = FlagsMixin(ResolveModeFlags).subtract;
+    pub const contains = FlagsMixin(ResolveModeFlags).contains;
+    pub const format = FlagFormatMixin(ResolveModeFlags).format;
 };
 pub const ShadingRatePaletteEntryNV = enum(i32) {
     no_invocations_nv = 0,
@@ -13583,7 +14444,14 @@ pub const GeometryInstanceFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(GeometryInstanceFlagsKHR);
+    pub const toInt = FlagsMixin(GeometryInstanceFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(GeometryInstanceFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(GeometryInstanceFlagsKHR).merge;
+    pub const intersect = FlagsMixin(GeometryInstanceFlagsKHR).intersect;
+    pub const complement = FlagsMixin(GeometryInstanceFlagsKHR).complement;
+    pub const subtract = FlagsMixin(GeometryInstanceFlagsKHR).subtract;
+    pub const contains = FlagsMixin(GeometryInstanceFlagsKHR).contains;
+    pub const format = FlagFormatMixin(GeometryInstanceFlagsKHR).format;
 };
 pub const GeometryFlagsKHR = packed struct(Flags) {
     opaque_bit_khr: bool = false,
@@ -13618,7 +14486,14 @@ pub const GeometryFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(GeometryFlagsKHR);
+    pub const toInt = FlagsMixin(GeometryFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(GeometryFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(GeometryFlagsKHR).merge;
+    pub const intersect = FlagsMixin(GeometryFlagsKHR).intersect;
+    pub const complement = FlagsMixin(GeometryFlagsKHR).complement;
+    pub const subtract = FlagsMixin(GeometryFlagsKHR).subtract;
+    pub const contains = FlagsMixin(GeometryFlagsKHR).contains;
+    pub const format = FlagFormatMixin(GeometryFlagsKHR).format;
 };
 pub const BuildAccelerationStructureFlagsKHR = packed struct(Flags) {
     allow_update_bit_khr: bool = false,
@@ -13653,7 +14528,14 @@ pub const BuildAccelerationStructureFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(BuildAccelerationStructureFlagsKHR);
+    pub const toInt = FlagsMixin(BuildAccelerationStructureFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(BuildAccelerationStructureFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(BuildAccelerationStructureFlagsKHR).merge;
+    pub const intersect = FlagsMixin(BuildAccelerationStructureFlagsKHR).intersect;
+    pub const complement = FlagsMixin(BuildAccelerationStructureFlagsKHR).complement;
+    pub const subtract = FlagsMixin(BuildAccelerationStructureFlagsKHR).subtract;
+    pub const contains = FlagsMixin(BuildAccelerationStructureFlagsKHR).contains;
+    pub const format = FlagFormatMixin(BuildAccelerationStructureFlagsKHR).format;
 };
 pub const AccelerationStructureCreateFlagsKHR = packed struct(Flags) {
     device_address_capture_replay_bit_khr: bool = false,
@@ -13688,7 +14570,14 @@ pub const AccelerationStructureCreateFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(AccelerationStructureCreateFlagsKHR);
+    pub const toInt = FlagsMixin(AccelerationStructureCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(AccelerationStructureCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(AccelerationStructureCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(AccelerationStructureCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(AccelerationStructureCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(AccelerationStructureCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(AccelerationStructureCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(AccelerationStructureCreateFlagsKHR).format;
 };
 pub const CopyAccelerationStructureModeKHR = enum(i32) {
     clone_khr = 0,
@@ -13792,7 +14681,14 @@ pub const FramebufferCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(FramebufferCreateFlags);
+    pub const toInt = FlagsMixin(FramebufferCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(FramebufferCreateFlags).fromInt;
+    pub const merge = FlagsMixin(FramebufferCreateFlags).merge;
+    pub const intersect = FlagsMixin(FramebufferCreateFlags).intersect;
+    pub const complement = FlagsMixin(FramebufferCreateFlags).complement;
+    pub const subtract = FlagsMixin(FramebufferCreateFlags).subtract;
+    pub const contains = FlagsMixin(FramebufferCreateFlags).contains;
+    pub const format = FlagFormatMixin(FramebufferCreateFlags).format;
 };
 pub const DeviceDiagnosticsConfigFlagsNV = packed struct(Flags) {
     enable_shader_debug_info_bit_nv: bool = false,
@@ -13827,7 +14723,14 @@ pub const DeviceDiagnosticsConfigFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DeviceDiagnosticsConfigFlagsNV);
+    pub const toInt = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).fromInt;
+    pub const merge = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).merge;
+    pub const intersect = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).intersect;
+    pub const complement = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).complement;
+    pub const subtract = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).subtract;
+    pub const contains = FlagsMixin(DeviceDiagnosticsConfigFlagsNV).contains;
+    pub const format = FlagFormatMixin(DeviceDiagnosticsConfigFlagsNV).format;
 };
 pub const PipelineCreationFeedbackFlags = packed struct(Flags) {
     valid_bit: bool = false,
@@ -13862,7 +14765,14 @@ pub const PipelineCreationFeedbackFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineCreationFeedbackFlags);
+    pub const toInt = FlagsMixin(PipelineCreationFeedbackFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineCreationFeedbackFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineCreationFeedbackFlags).merge;
+    pub const intersect = FlagsMixin(PipelineCreationFeedbackFlags).intersect;
+    pub const complement = FlagsMixin(PipelineCreationFeedbackFlags).complement;
+    pub const subtract = FlagsMixin(PipelineCreationFeedbackFlags).subtract;
+    pub const contains = FlagsMixin(PipelineCreationFeedbackFlags).contains;
+    pub const format = FlagFormatMixin(PipelineCreationFeedbackFlags).format;
 };
 pub const FullScreenExclusiveEXT = enum(i32) {
     default_ext = 0,
@@ -13945,7 +14855,14 @@ pub const MemoryDecompressionMethodFlagsNV = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(MemoryDecompressionMethodFlagsNV);
+    pub const toInt = FlagsMixin(MemoryDecompressionMethodFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(MemoryDecompressionMethodFlagsNV).fromInt;
+    pub const merge = FlagsMixin(MemoryDecompressionMethodFlagsNV).merge;
+    pub const intersect = FlagsMixin(MemoryDecompressionMethodFlagsNV).intersect;
+    pub const complement = FlagsMixin(MemoryDecompressionMethodFlagsNV).complement;
+    pub const subtract = FlagsMixin(MemoryDecompressionMethodFlagsNV).subtract;
+    pub const contains = FlagsMixin(MemoryDecompressionMethodFlagsNV).contains;
+    pub const format = FlagFormatMixin(MemoryDecompressionMethodFlagsNV).format;
 };
 pub const PerformanceCounterUnitKHR = enum(i32) {
     generic_khr = 0,
@@ -14003,19 +14920,47 @@ pub const PerformanceCounterDescriptionFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PerformanceCounterDescriptionFlagsKHR);
+    pub const toInt = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).merge;
+    pub const intersect = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).intersect;
+    pub const complement = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).complement;
+    pub const subtract = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).subtract;
+    pub const contains = FlagsMixin(PerformanceCounterDescriptionFlagsKHR).contains;
+    pub const format = FlagFormatMixin(PerformanceCounterDescriptionFlagsKHR).format;
 };
 pub const AcquireProfilingLockFlagsKHR = packed struct(Flags) {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(AcquireProfilingLockFlagsKHR);
+    pub const toInt = FlagsMixin(AcquireProfilingLockFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(AcquireProfilingLockFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(AcquireProfilingLockFlagsKHR).merge;
+    pub const intersect = FlagsMixin(AcquireProfilingLockFlagsKHR).intersect;
+    pub const complement = FlagsMixin(AcquireProfilingLockFlagsKHR).complement;
+    pub const subtract = FlagsMixin(AcquireProfilingLockFlagsKHR).subtract;
+    pub const contains = FlagsMixin(AcquireProfilingLockFlagsKHR).contains;
+    pub const format = FlagFormatMixin(AcquireProfilingLockFlagsKHR).format;
 };
 pub const ShaderCorePropertiesFlagsAMD = packed struct(Flags) {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(ShaderCorePropertiesFlagsAMD);
+    pub const toInt = FlagsMixin(ShaderCorePropertiesFlagsAMD).toInt;
+    pub const fromInt = FlagsMixin(ShaderCorePropertiesFlagsAMD).fromInt;
+    pub const merge = FlagsMixin(ShaderCorePropertiesFlagsAMD).merge;
+    pub const intersect = FlagsMixin(ShaderCorePropertiesFlagsAMD).intersect;
+    pub const complement = FlagsMixin(ShaderCorePropertiesFlagsAMD).complement;
+    pub const subtract = FlagsMixin(ShaderCorePropertiesFlagsAMD).subtract;
+    pub const contains = FlagsMixin(ShaderCorePropertiesFlagsAMD).contains;
+    pub const format = FlagFormatMixin(ShaderCorePropertiesFlagsAMD).format;
 };
 pub const RefreshObjectFlagsKHR = packed struct(Flags) {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(RefreshObjectFlagsKHR);
+    pub const toInt = FlagsMixin(RefreshObjectFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(RefreshObjectFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(RefreshObjectFlagsKHR).merge;
+    pub const intersect = FlagsMixin(RefreshObjectFlagsKHR).intersect;
+    pub const complement = FlagsMixin(RefreshObjectFlagsKHR).complement;
+    pub const subtract = FlagsMixin(RefreshObjectFlagsKHR).subtract;
+    pub const contains = FlagsMixin(RefreshObjectFlagsKHR).contains;
+    pub const format = FlagFormatMixin(RefreshObjectFlagsKHR).format;
 };
 pub const PerformanceConfigurationTypeINTEL = enum(i32) {
     command_queue_metrics_discovery_activated_intel = 0,
@@ -14072,7 +15017,14 @@ pub const LineRasterizationModeKHR = enum(i32) {
 };
 pub const PipelineCompilerControlFlagsAMD = packed struct(Flags) {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(PipelineCompilerControlFlagsAMD);
+    pub const toInt = FlagsMixin(PipelineCompilerControlFlagsAMD).toInt;
+    pub const fromInt = FlagsMixin(PipelineCompilerControlFlagsAMD).fromInt;
+    pub const merge = FlagsMixin(PipelineCompilerControlFlagsAMD).merge;
+    pub const intersect = FlagsMixin(PipelineCompilerControlFlagsAMD).intersect;
+    pub const complement = FlagsMixin(PipelineCompilerControlFlagsAMD).complement;
+    pub const subtract = FlagsMixin(PipelineCompilerControlFlagsAMD).subtract;
+    pub const contains = FlagsMixin(PipelineCompilerControlFlagsAMD).contains;
+    pub const format = FlagFormatMixin(PipelineCompilerControlFlagsAMD).format;
 };
 pub const FaultLevel = enum(i32) {
     unassigned = 0,
@@ -14128,7 +15080,14 @@ pub const ToolPurposeFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ToolPurposeFlags);
+    pub const toInt = FlagsMixin(ToolPurposeFlags).toInt;
+    pub const fromInt = FlagsMixin(ToolPurposeFlags).fromInt;
+    pub const merge = FlagsMixin(ToolPurposeFlags).merge;
+    pub const intersect = FlagsMixin(ToolPurposeFlags).intersect;
+    pub const complement = FlagsMixin(ToolPurposeFlags).complement;
+    pub const subtract = FlagsMixin(ToolPurposeFlags).subtract;
+    pub const contains = FlagsMixin(ToolPurposeFlags).contains;
+    pub const format = FlagFormatMixin(ToolPurposeFlags).format;
 };
 pub const PipelineMatchControl = enum(i32) {
     application_uuid_exact_match = 0,
@@ -14244,7 +15203,14 @@ pub const AccessFlags2 = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(AccessFlags2);
+    pub const toInt = FlagsMixin(AccessFlags2).toInt;
+    pub const fromInt = FlagsMixin(AccessFlags2).fromInt;
+    pub const merge = FlagsMixin(AccessFlags2).merge;
+    pub const intersect = FlagsMixin(AccessFlags2).intersect;
+    pub const complement = FlagsMixin(AccessFlags2).complement;
+    pub const subtract = FlagsMixin(AccessFlags2).subtract;
+    pub const contains = FlagsMixin(AccessFlags2).contains;
+    pub const format = FlagFormatMixin(AccessFlags2).format;
 };
 pub const PipelineStageFlags2 = packed struct(Flags64) {
     top_of_pipe_bit: bool = false,
@@ -14311,7 +15277,14 @@ pub const PipelineStageFlags2 = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(PipelineStageFlags2);
+    pub const toInt = FlagsMixin(PipelineStageFlags2).toInt;
+    pub const fromInt = FlagsMixin(PipelineStageFlags2).fromInt;
+    pub const merge = FlagsMixin(PipelineStageFlags2).merge;
+    pub const intersect = FlagsMixin(PipelineStageFlags2).intersect;
+    pub const complement = FlagsMixin(PipelineStageFlags2).complement;
+    pub const subtract = FlagsMixin(PipelineStageFlags2).subtract;
+    pub const contains = FlagsMixin(PipelineStageFlags2).contains;
+    pub const format = FlagFormatMixin(PipelineStageFlags2).format;
 };
 pub const SubmitFlags = packed struct(Flags) {
     protected_bit: bool = false,
@@ -14346,7 +15319,14 @@ pub const SubmitFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(SubmitFlags);
+    pub const toInt = FlagsMixin(SubmitFlags).toInt;
+    pub const fromInt = FlagsMixin(SubmitFlags).fromInt;
+    pub const merge = FlagsMixin(SubmitFlags).merge;
+    pub const intersect = FlagsMixin(SubmitFlags).intersect;
+    pub const complement = FlagsMixin(SubmitFlags).complement;
+    pub const subtract = FlagsMixin(SubmitFlags).subtract;
+    pub const contains = FlagsMixin(SubmitFlags).contains;
+    pub const format = FlagFormatMixin(SubmitFlags).format;
 };
 pub const EventCreateFlags = packed struct(Flags) {
     device_only_bit: bool = false,
@@ -14381,7 +15361,14 @@ pub const EventCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(EventCreateFlags);
+    pub const toInt = FlagsMixin(EventCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(EventCreateFlags).fromInt;
+    pub const merge = FlagsMixin(EventCreateFlags).merge;
+    pub const intersect = FlagsMixin(EventCreateFlags).intersect;
+    pub const complement = FlagsMixin(EventCreateFlags).complement;
+    pub const subtract = FlagsMixin(EventCreateFlags).subtract;
+    pub const contains = FlagsMixin(EventCreateFlags).contains;
+    pub const format = FlagFormatMixin(EventCreateFlags).format;
 };
 pub const PipelineLayoutCreateFlags = packed struct(Flags) {
     _reserved_bit_0: bool = false,
@@ -14416,7 +15403,14 @@ pub const PipelineLayoutCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineLayoutCreateFlags);
+    pub const toInt = FlagsMixin(PipelineLayoutCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineLayoutCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineLayoutCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineLayoutCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineLayoutCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineLayoutCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineLayoutCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineLayoutCreateFlags).format;
 };
 pub const SciSyncClientTypeNV = enum(i32) {
     signaler_nv = 0,
@@ -14477,7 +15471,14 @@ pub const PipelineColorBlendStateCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineColorBlendStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineColorBlendStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineColorBlendStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineColorBlendStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineColorBlendStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineColorBlendStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineColorBlendStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineColorBlendStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineColorBlendStateCreateFlags).format;
 };
 pub const PipelineDepthStencilStateCreateFlags = packed struct(Flags) {
     rasterization_order_attachment_depth_access_bit_ext: bool = false,
@@ -14512,7 +15513,14 @@ pub const PipelineDepthStencilStateCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PipelineDepthStencilStateCreateFlags);
+    pub const toInt = FlagsMixin(PipelineDepthStencilStateCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(PipelineDepthStencilStateCreateFlags).fromInt;
+    pub const merge = FlagsMixin(PipelineDepthStencilStateCreateFlags).merge;
+    pub const intersect = FlagsMixin(PipelineDepthStencilStateCreateFlags).intersect;
+    pub const complement = FlagsMixin(PipelineDepthStencilStateCreateFlags).complement;
+    pub const subtract = FlagsMixin(PipelineDepthStencilStateCreateFlags).subtract;
+    pub const contains = FlagsMixin(PipelineDepthStencilStateCreateFlags).contains;
+    pub const format = FlagFormatMixin(PipelineDepthStencilStateCreateFlags).format;
 };
 pub const GraphicsPipelineLibraryFlagsEXT = packed struct(Flags) {
     vertex_input_interface_bit_ext: bool = false,
@@ -14547,7 +15555,14 @@ pub const GraphicsPipelineLibraryFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(GraphicsPipelineLibraryFlagsEXT);
+    pub const toInt = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).merge;
+    pub const intersect = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).intersect;
+    pub const complement = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).complement;
+    pub const subtract = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).subtract;
+    pub const contains = FlagsMixin(GraphicsPipelineLibraryFlagsEXT).contains;
+    pub const format = FlagFormatMixin(GraphicsPipelineLibraryFlagsEXT).format;
 };
 pub const DeviceAddressBindingFlagsEXT = packed struct(Flags) {
     internal_object_bit_ext: bool = false,
@@ -14582,7 +15597,14 @@ pub const DeviceAddressBindingFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(DeviceAddressBindingFlagsEXT);
+    pub const toInt = FlagsMixin(DeviceAddressBindingFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(DeviceAddressBindingFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(DeviceAddressBindingFlagsEXT).merge;
+    pub const intersect = FlagsMixin(DeviceAddressBindingFlagsEXT).intersect;
+    pub const complement = FlagsMixin(DeviceAddressBindingFlagsEXT).complement;
+    pub const subtract = FlagsMixin(DeviceAddressBindingFlagsEXT).subtract;
+    pub const contains = FlagsMixin(DeviceAddressBindingFlagsEXT).contains;
+    pub const format = FlagFormatMixin(DeviceAddressBindingFlagsEXT).format;
 };
 pub const DeviceAddressBindingTypeEXT = enum(i32) {
     bind_ext = 0,
@@ -14622,7 +15644,14 @@ pub const FrameBoundaryFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(FrameBoundaryFlagsEXT);
+    pub const toInt = FlagsMixin(FrameBoundaryFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(FrameBoundaryFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(FrameBoundaryFlagsEXT).merge;
+    pub const intersect = FlagsMixin(FrameBoundaryFlagsEXT).intersect;
+    pub const complement = FlagsMixin(FrameBoundaryFlagsEXT).complement;
+    pub const subtract = FlagsMixin(FrameBoundaryFlagsEXT).subtract;
+    pub const contains = FlagsMixin(FrameBoundaryFlagsEXT).contains;
+    pub const format = FlagFormatMixin(FrameBoundaryFlagsEXT).format;
 };
 pub const PresentScalingFlagsEXT = packed struct(Flags) {
     one_to_one_bit_ext: bool = false,
@@ -14657,7 +15686,14 @@ pub const PresentScalingFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PresentScalingFlagsEXT);
+    pub const toInt = FlagsMixin(PresentScalingFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PresentScalingFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PresentScalingFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PresentScalingFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PresentScalingFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PresentScalingFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PresentScalingFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PresentScalingFlagsEXT).format;
 };
 pub const PresentGravityFlagsEXT = packed struct(Flags) {
     min_bit_ext: bool = false,
@@ -14692,7 +15728,14 @@ pub const PresentGravityFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(PresentGravityFlagsEXT);
+    pub const toInt = FlagsMixin(PresentGravityFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(PresentGravityFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(PresentGravityFlagsEXT).merge;
+    pub const intersect = FlagsMixin(PresentGravityFlagsEXT).intersect;
+    pub const complement = FlagsMixin(PresentGravityFlagsEXT).complement;
+    pub const subtract = FlagsMixin(PresentGravityFlagsEXT).subtract;
+    pub const contains = FlagsMixin(PresentGravityFlagsEXT).contains;
+    pub const format = FlagFormatMixin(PresentGravityFlagsEXT).format;
 };
 pub const PhysicalDeviceSchedulingControlsFlagsARM = packed struct(Flags64) {
     shader_core_count_arm: bool = false,
@@ -14759,7 +15802,14 @@ pub const PhysicalDeviceSchedulingControlsFlagsARM = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM);
+    pub const toInt = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).toInt;
+    pub const fromInt = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).fromInt;
+    pub const merge = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).merge;
+    pub const intersect = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).intersect;
+    pub const complement = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).complement;
+    pub const subtract = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).subtract;
+    pub const contains = FlagsMixin(PhysicalDeviceSchedulingControlsFlagsARM).contains;
+    pub const format = FlagFormatMixin(PhysicalDeviceSchedulingControlsFlagsARM).format;
 };
 pub const VideoCodecOperationFlagsKHR = packed struct(Flags) {
     decode_h264_bit_khr: bool = false,
@@ -14794,7 +15844,14 @@ pub const VideoCodecOperationFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoCodecOperationFlagsKHR);
+    pub const toInt = FlagsMixin(VideoCodecOperationFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoCodecOperationFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoCodecOperationFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoCodecOperationFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoCodecOperationFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoCodecOperationFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoCodecOperationFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoCodecOperationFlagsKHR).format;
 };
 pub const VideoChromaSubsamplingFlagsKHR = packed struct(Flags) {
     monochrome_bit_khr: bool = false,
@@ -14829,7 +15886,14 @@ pub const VideoChromaSubsamplingFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoChromaSubsamplingFlagsKHR);
+    pub const toInt = FlagsMixin(VideoChromaSubsamplingFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoChromaSubsamplingFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoChromaSubsamplingFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoChromaSubsamplingFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoChromaSubsamplingFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoChromaSubsamplingFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoChromaSubsamplingFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoChromaSubsamplingFlagsKHR).format;
 };
 pub const VideoComponentBitDepthFlagsKHR = packed struct(Flags) {
     @"8_bit_khr": bool = false,
@@ -14864,7 +15928,14 @@ pub const VideoComponentBitDepthFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoComponentBitDepthFlagsKHR);
+    pub const toInt = FlagsMixin(VideoComponentBitDepthFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoComponentBitDepthFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoComponentBitDepthFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoComponentBitDepthFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoComponentBitDepthFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoComponentBitDepthFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoComponentBitDepthFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoComponentBitDepthFlagsKHR).format;
 };
 pub const VideoCapabilityFlagsKHR = packed struct(Flags) {
     protected_content_bit_khr: bool = false,
@@ -14899,7 +15970,14 @@ pub const VideoCapabilityFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoCapabilityFlagsKHR);
+    pub const toInt = FlagsMixin(VideoCapabilityFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoCapabilityFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoCapabilityFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoCapabilityFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoCapabilityFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoCapabilityFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoCapabilityFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoCapabilityFlagsKHR).format;
 };
 pub const VideoSessionCreateFlagsKHR = packed struct(Flags) {
     protected_content_bit_khr: bool = false,
@@ -14934,7 +16012,14 @@ pub const VideoSessionCreateFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoSessionCreateFlagsKHR);
+    pub const toInt = FlagsMixin(VideoSessionCreateFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoSessionCreateFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoSessionCreateFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoSessionCreateFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoSessionCreateFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoSessionCreateFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoSessionCreateFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoSessionCreateFlagsKHR).format;
 };
 pub const VideoDecodeH264PictureLayoutFlagsKHR = packed struct(Flags) {
     interlaced_interleaved_lines_bit_khr: bool = false,
@@ -14969,7 +16054,14 @@ pub const VideoDecodeH264PictureLayoutFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR);
+    pub const toInt = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoDecodeH264PictureLayoutFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoDecodeH264PictureLayoutFlagsKHR).format;
 };
 pub const VideoCodingControlFlagsKHR = packed struct(Flags) {
     reset_bit_khr: bool = false,
@@ -15004,7 +16096,14 @@ pub const VideoCodingControlFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoCodingControlFlagsKHR);
+    pub const toInt = FlagsMixin(VideoCodingControlFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoCodingControlFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoCodingControlFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoCodingControlFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoCodingControlFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoCodingControlFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoCodingControlFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoCodingControlFlagsKHR).format;
 };
 pub const QueryResultStatusKHR = enum(i32) {
     error_khr = -1,
@@ -15046,7 +16145,14 @@ pub const VideoDecodeUsageFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoDecodeUsageFlagsKHR);
+    pub const toInt = FlagsMixin(VideoDecodeUsageFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoDecodeUsageFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoDecodeUsageFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoDecodeUsageFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoDecodeUsageFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoDecodeUsageFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoDecodeUsageFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoDecodeUsageFlagsKHR).format;
 };
 pub const VideoDecodeCapabilityFlagsKHR = packed struct(Flags) {
     dpb_and_output_coincide_bit_khr: bool = false,
@@ -15081,11 +16187,25 @@ pub const VideoDecodeCapabilityFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoDecodeCapabilityFlagsKHR);
+    pub const toInt = FlagsMixin(VideoDecodeCapabilityFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoDecodeCapabilityFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoDecodeCapabilityFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoDecodeCapabilityFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoDecodeCapabilityFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoDecodeCapabilityFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoDecodeCapabilityFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoDecodeCapabilityFlagsKHR).format;
 };
 pub const VideoEncodeFlagsKHR = packed struct(Flags) {
     _reserved_bits: Flags = 0,
-    pub usingnamespace FlagsMixin(VideoEncodeFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeFlagsKHR).format;
 };
 pub const VideoEncodeUsageFlagsKHR = packed struct(Flags) {
     transcoding_bit_khr: bool = false,
@@ -15120,7 +16240,14 @@ pub const VideoEncodeUsageFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeUsageFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeUsageFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeUsageFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeUsageFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeUsageFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeUsageFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeUsageFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeUsageFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeUsageFlagsKHR).format;
 };
 pub const VideoEncodeContentFlagsKHR = packed struct(Flags) {
     camera_bit_khr: bool = false,
@@ -15155,7 +16282,14 @@ pub const VideoEncodeContentFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeContentFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeContentFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeContentFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeContentFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeContentFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeContentFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeContentFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeContentFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeContentFlagsKHR).format;
 };
 pub const VideoEncodeTuningModeKHR = enum(i32) {
     default_khr = 0,
@@ -15198,7 +16332,14 @@ pub const VideoEncodeCapabilityFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeCapabilityFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeCapabilityFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeCapabilityFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeCapabilityFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeCapabilityFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeCapabilityFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeCapabilityFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeCapabilityFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeCapabilityFlagsKHR).format;
 };
 pub const VideoEncodeFeedbackFlagsKHR = packed struct(Flags) {
     bitstream_buffer_offset_bit_khr: bool = false,
@@ -15233,7 +16374,14 @@ pub const VideoEncodeFeedbackFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeFeedbackFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeFeedbackFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeFeedbackFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeFeedbackFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeFeedbackFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeFeedbackFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeFeedbackFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeFeedbackFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeFeedbackFlagsKHR).format;
 };
 pub const VideoEncodeRateControlModeFlagsKHR = packed struct(Flags) {
     disabled_bit_khr: bool = false,
@@ -15268,7 +16416,14 @@ pub const VideoEncodeRateControlModeFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeRateControlModeFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeRateControlModeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeRateControlModeFlagsKHR).format;
 };
 pub const VideoEncodeH264CapabilityFlagsKHR = packed struct(Flags) {
     hrd_compliance_bit_khr: bool = false,
@@ -15303,7 +16458,14 @@ pub const VideoEncodeH264CapabilityFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH264CapabilityFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH264CapabilityFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH264CapabilityFlagsKHR).format;
 };
 pub const VideoEncodeH264StdFlagsKHR = packed struct(Flags) {
     separate_color_plane_flag_set_bit_khr: bool = false,
@@ -15338,7 +16500,14 @@ pub const VideoEncodeH264StdFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH264StdFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH264StdFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH264StdFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH264StdFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH264StdFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH264StdFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH264StdFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH264StdFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH264StdFlagsKHR).format;
 };
 pub const VideoEncodeH264RateControlFlagsKHR = packed struct(Flags) {
     attempt_hrd_compliance_bit_khr: bool = false,
@@ -15373,7 +16542,14 @@ pub const VideoEncodeH264RateControlFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH264RateControlFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH264RateControlFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH264RateControlFlagsKHR).format;
 };
 pub const HostImageCopyFlagsEXT = packed struct(Flags) {
     memcpy_ext: bool = false,
@@ -15408,7 +16584,14 @@ pub const HostImageCopyFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(HostImageCopyFlagsEXT);
+    pub const toInt = FlagsMixin(HostImageCopyFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(HostImageCopyFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(HostImageCopyFlagsEXT).merge;
+    pub const intersect = FlagsMixin(HostImageCopyFlagsEXT).intersect;
+    pub const complement = FlagsMixin(HostImageCopyFlagsEXT).complement;
+    pub const subtract = FlagsMixin(HostImageCopyFlagsEXT).subtract;
+    pub const contains = FlagsMixin(HostImageCopyFlagsEXT).contains;
+    pub const format = FlagFormatMixin(HostImageCopyFlagsEXT).format;
 };
 pub const ImageConstraintsInfoFlagsFUCHSIA = packed struct(Flags) {
     cpu_read_rarely_fuchsia: bool = false,
@@ -15443,7 +16626,14 @@ pub const ImageConstraintsInfoFlagsFUCHSIA = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA);
+    pub const toInt = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).toInt;
+    pub const fromInt = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).fromInt;
+    pub const merge = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).merge;
+    pub const intersect = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).intersect;
+    pub const complement = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).complement;
+    pub const subtract = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).subtract;
+    pub const contains = FlagsMixin(ImageConstraintsInfoFlagsFUCHSIA).contains;
+    pub const format = FlagFormatMixin(ImageConstraintsInfoFlagsFUCHSIA).format;
 };
 pub const FormatFeatureFlags2 = packed struct(Flags64) {
     sampled_image_bit: bool = false,
@@ -15510,7 +16700,14 @@ pub const FormatFeatureFlags2 = packed struct(Flags64) {
     _reserved_bit_61: bool = false,
     _reserved_bit_62: bool = false,
     _reserved_bit_63: bool = false,
-    pub usingnamespace FlagsMixin(FormatFeatureFlags2);
+    pub const toInt = FlagsMixin(FormatFeatureFlags2).toInt;
+    pub const fromInt = FlagsMixin(FormatFeatureFlags2).fromInt;
+    pub const merge = FlagsMixin(FormatFeatureFlags2).merge;
+    pub const intersect = FlagsMixin(FormatFeatureFlags2).intersect;
+    pub const complement = FlagsMixin(FormatFeatureFlags2).complement;
+    pub const subtract = FlagsMixin(FormatFeatureFlags2).subtract;
+    pub const contains = FlagsMixin(FormatFeatureFlags2).contains;
+    pub const format = FlagFormatMixin(FormatFeatureFlags2).format;
 };
 pub const RenderingFlags = packed struct(Flags) {
     contents_secondary_command_buffers_bit: bool = false,
@@ -15545,7 +16742,14 @@ pub const RenderingFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(RenderingFlags);
+    pub const toInt = FlagsMixin(RenderingFlags).toInt;
+    pub const fromInt = FlagsMixin(RenderingFlags).fromInt;
+    pub const merge = FlagsMixin(RenderingFlags).merge;
+    pub const intersect = FlagsMixin(RenderingFlags).intersect;
+    pub const complement = FlagsMixin(RenderingFlags).complement;
+    pub const subtract = FlagsMixin(RenderingFlags).subtract;
+    pub const contains = FlagsMixin(RenderingFlags).contains;
+    pub const format = FlagFormatMixin(RenderingFlags).format;
 };
 pub const VideoEncodeH265CapabilityFlagsKHR = packed struct(Flags) {
     hrd_compliance_bit_khr: bool = false,
@@ -15580,7 +16784,14 @@ pub const VideoEncodeH265CapabilityFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH265CapabilityFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH265CapabilityFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH265CapabilityFlagsKHR).format;
 };
 pub const VideoEncodeH265StdFlagsKHR = packed struct(Flags) {
     separate_color_plane_flag_set_bit_khr: bool = false,
@@ -15615,7 +16826,14 @@ pub const VideoEncodeH265StdFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH265StdFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH265StdFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH265StdFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH265StdFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH265StdFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH265StdFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH265StdFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH265StdFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH265StdFlagsKHR).format;
 };
 pub const VideoEncodeH265RateControlFlagsKHR = packed struct(Flags) {
     attempt_hrd_compliance_bit_khr: bool = false,
@@ -15650,7 +16868,14 @@ pub const VideoEncodeH265RateControlFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH265RateControlFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH265RateControlFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH265RateControlFlagsKHR).format;
 };
 pub const VideoEncodeH265CtbSizeFlagsKHR = packed struct(Flags) {
     @"16_bit_khr": bool = false,
@@ -15685,7 +16910,14 @@ pub const VideoEncodeH265CtbSizeFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH265CtbSizeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH265CtbSizeFlagsKHR).format;
 };
 pub const VideoEncodeH265TransformBlockSizeFlagsKHR = packed struct(Flags) {
     @"4_bit_khr": bool = false,
@@ -15720,7 +16952,14 @@ pub const VideoEncodeH265TransformBlockSizeFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR);
+    pub const toInt = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).merge;
+    pub const intersect = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).intersect;
+    pub const complement = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).complement;
+    pub const subtract = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).subtract;
+    pub const contains = FlagsMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).contains;
+    pub const format = FlagFormatMixin(VideoEncodeH265TransformBlockSizeFlagsKHR).format;
 };
 pub const ExportMetalObjectTypeFlagsEXT = packed struct(Flags) {
     metal_device_bit_ext: bool = false,
@@ -15755,7 +16994,14 @@ pub const ExportMetalObjectTypeFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ExportMetalObjectTypeFlagsEXT);
+    pub const toInt = FlagsMixin(ExportMetalObjectTypeFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ExportMetalObjectTypeFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ExportMetalObjectTypeFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ExportMetalObjectTypeFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ExportMetalObjectTypeFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ExportMetalObjectTypeFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ExportMetalObjectTypeFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ExportMetalObjectTypeFlagsEXT).format;
 };
 pub const InstanceCreateFlags = packed struct(Flags) {
     enumerate_portability_bit_khr: bool = false,
@@ -15790,7 +17036,14 @@ pub const InstanceCreateFlags = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(InstanceCreateFlags);
+    pub const toInt = FlagsMixin(InstanceCreateFlags).toInt;
+    pub const fromInt = FlagsMixin(InstanceCreateFlags).fromInt;
+    pub const merge = FlagsMixin(InstanceCreateFlags).merge;
+    pub const intersect = FlagsMixin(InstanceCreateFlags).intersect;
+    pub const complement = FlagsMixin(InstanceCreateFlags).complement;
+    pub const subtract = FlagsMixin(InstanceCreateFlags).subtract;
+    pub const contains = FlagsMixin(InstanceCreateFlags).contains;
+    pub const format = FlagFormatMixin(InstanceCreateFlags).format;
 };
 pub const ImageCompressionFlagsEXT = packed struct(Flags) {
     fixed_rate_default_ext: bool = false,
@@ -15825,7 +17078,14 @@ pub const ImageCompressionFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageCompressionFlagsEXT);
+    pub const toInt = FlagsMixin(ImageCompressionFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ImageCompressionFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ImageCompressionFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ImageCompressionFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ImageCompressionFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ImageCompressionFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ImageCompressionFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ImageCompressionFlagsEXT).format;
 };
 pub const ImageCompressionFixedRateFlagsEXT = packed struct(Flags) {
     @"1bpc_bit_ext": bool = false,
@@ -15860,7 +17120,14 @@ pub const ImageCompressionFixedRateFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ImageCompressionFixedRateFlagsEXT);
+    pub const toInt = FlagsMixin(ImageCompressionFixedRateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ImageCompressionFixedRateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ImageCompressionFixedRateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ImageCompressionFixedRateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ImageCompressionFixedRateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ImageCompressionFixedRateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ImageCompressionFixedRateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ImageCompressionFixedRateFlagsEXT).format;
 };
 pub const PipelineRobustnessBufferBehaviorEXT = enum(i32) {
     device_default_ext = 0,
@@ -15909,7 +17176,14 @@ pub const OpticalFlowGridSizeFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(OpticalFlowGridSizeFlagsNV);
+    pub const toInt = FlagsMixin(OpticalFlowGridSizeFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(OpticalFlowGridSizeFlagsNV).fromInt;
+    pub const merge = FlagsMixin(OpticalFlowGridSizeFlagsNV).merge;
+    pub const intersect = FlagsMixin(OpticalFlowGridSizeFlagsNV).intersect;
+    pub const complement = FlagsMixin(OpticalFlowGridSizeFlagsNV).complement;
+    pub const subtract = FlagsMixin(OpticalFlowGridSizeFlagsNV).subtract;
+    pub const contains = FlagsMixin(OpticalFlowGridSizeFlagsNV).contains;
+    pub const format = FlagFormatMixin(OpticalFlowGridSizeFlagsNV).format;
 };
 pub const OpticalFlowUsageFlagsNV = packed struct(Flags) {
     input_bit_nv: bool = false,
@@ -15944,7 +17218,14 @@ pub const OpticalFlowUsageFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(OpticalFlowUsageFlagsNV);
+    pub const toInt = FlagsMixin(OpticalFlowUsageFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(OpticalFlowUsageFlagsNV).fromInt;
+    pub const merge = FlagsMixin(OpticalFlowUsageFlagsNV).merge;
+    pub const intersect = FlagsMixin(OpticalFlowUsageFlagsNV).intersect;
+    pub const complement = FlagsMixin(OpticalFlowUsageFlagsNV).complement;
+    pub const subtract = FlagsMixin(OpticalFlowUsageFlagsNV).subtract;
+    pub const contains = FlagsMixin(OpticalFlowUsageFlagsNV).contains;
+    pub const format = FlagFormatMixin(OpticalFlowUsageFlagsNV).format;
 };
 pub const OpticalFlowPerformanceLevelNV = enum(i32) {
     unknown_nv = 0,
@@ -15998,7 +17279,14 @@ pub const OpticalFlowSessionCreateFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(OpticalFlowSessionCreateFlagsNV);
+    pub const toInt = FlagsMixin(OpticalFlowSessionCreateFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(OpticalFlowSessionCreateFlagsNV).fromInt;
+    pub const merge = FlagsMixin(OpticalFlowSessionCreateFlagsNV).merge;
+    pub const intersect = FlagsMixin(OpticalFlowSessionCreateFlagsNV).intersect;
+    pub const complement = FlagsMixin(OpticalFlowSessionCreateFlagsNV).complement;
+    pub const subtract = FlagsMixin(OpticalFlowSessionCreateFlagsNV).subtract;
+    pub const contains = FlagsMixin(OpticalFlowSessionCreateFlagsNV).contains;
+    pub const format = FlagFormatMixin(OpticalFlowSessionCreateFlagsNV).format;
 };
 pub const OpticalFlowExecuteFlagsNV = packed struct(Flags) {
     disable_temporal_hints_bit_nv: bool = false,
@@ -16033,7 +17321,14 @@ pub const OpticalFlowExecuteFlagsNV = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(OpticalFlowExecuteFlagsNV);
+    pub const toInt = FlagsMixin(OpticalFlowExecuteFlagsNV).toInt;
+    pub const fromInt = FlagsMixin(OpticalFlowExecuteFlagsNV).fromInt;
+    pub const merge = FlagsMixin(OpticalFlowExecuteFlagsNV).merge;
+    pub const intersect = FlagsMixin(OpticalFlowExecuteFlagsNV).intersect;
+    pub const complement = FlagsMixin(OpticalFlowExecuteFlagsNV).complement;
+    pub const subtract = FlagsMixin(OpticalFlowExecuteFlagsNV).subtract;
+    pub const contains = FlagsMixin(OpticalFlowExecuteFlagsNV).contains;
+    pub const format = FlagFormatMixin(OpticalFlowExecuteFlagsNV).format;
 };
 pub const MicromapTypeEXT = enum(i32) {
     opacity_micromap_ext = 0,
@@ -16073,7 +17368,14 @@ pub const BuildMicromapFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(BuildMicromapFlagsEXT);
+    pub const toInt = FlagsMixin(BuildMicromapFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(BuildMicromapFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(BuildMicromapFlagsEXT).merge;
+    pub const intersect = FlagsMixin(BuildMicromapFlagsEXT).intersect;
+    pub const complement = FlagsMixin(BuildMicromapFlagsEXT).complement;
+    pub const subtract = FlagsMixin(BuildMicromapFlagsEXT).subtract;
+    pub const contains = FlagsMixin(BuildMicromapFlagsEXT).contains;
+    pub const format = FlagFormatMixin(BuildMicromapFlagsEXT).format;
 };
 pub const MicromapCreateFlagsEXT = packed struct(Flags) {
     device_address_capture_replay_bit_ext: bool = false,
@@ -16108,7 +17410,14 @@ pub const MicromapCreateFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MicromapCreateFlagsEXT);
+    pub const toInt = FlagsMixin(MicromapCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(MicromapCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(MicromapCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(MicromapCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(MicromapCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(MicromapCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(MicromapCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(MicromapCreateFlagsEXT).format;
 };
 pub const CopyMicromapModeEXT = enum(i32) {
     clone_ext = 0,
@@ -16192,7 +17501,14 @@ pub const ShaderCreateFlagsEXT = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(ShaderCreateFlagsEXT);
+    pub const toInt = FlagsMixin(ShaderCreateFlagsEXT).toInt;
+    pub const fromInt = FlagsMixin(ShaderCreateFlagsEXT).fromInt;
+    pub const merge = FlagsMixin(ShaderCreateFlagsEXT).merge;
+    pub const intersect = FlagsMixin(ShaderCreateFlagsEXT).intersect;
+    pub const complement = FlagsMixin(ShaderCreateFlagsEXT).complement;
+    pub const subtract = FlagsMixin(ShaderCreateFlagsEXT).subtract;
+    pub const contains = FlagsMixin(ShaderCreateFlagsEXT).contains;
+    pub const format = FlagFormatMixin(ShaderCreateFlagsEXT).format;
 };
 pub const ShaderCodeTypeEXT = enum(i32) {
     binary_ext = 0,
@@ -16305,7 +17621,14 @@ pub const MemoryUnmapFlagsKHR = packed struct(Flags) {
     _reserved_bit_29: bool = false,
     _reserved_bit_30: bool = false,
     _reserved_bit_31: bool = false,
-    pub usingnamespace FlagsMixin(MemoryUnmapFlagsKHR);
+    pub const toInt = FlagsMixin(MemoryUnmapFlagsKHR).toInt;
+    pub const fromInt = FlagsMixin(MemoryUnmapFlagsKHR).fromInt;
+    pub const merge = FlagsMixin(MemoryUnmapFlagsKHR).merge;
+    pub const intersect = FlagsMixin(MemoryUnmapFlagsKHR).intersect;
+    pub const complement = FlagsMixin(MemoryUnmapFlagsKHR).complement;
+    pub const subtract = FlagsMixin(MemoryUnmapFlagsKHR).subtract;
+    pub const contains = FlagsMixin(MemoryUnmapFlagsKHR).contains;
+    pub const format = FlagFormatMixin(MemoryUnmapFlagsKHR).format;
 };
 pub const PfnCreateInstance = *const fn (
     p_create_info: *const InstanceCreateInfo,
@@ -23351,7 +24674,7 @@ pub fn CommandFlagsMixin(comptime CommandFlags: type) type {
         pub fn merge(lhs: CommandFlags, rhs: CommandFlags) CommandFlags {
             var result: CommandFlags = .{};
             @setEvalBranchQuota(10_000);
-            inline for (@typeInfo(CommandFlags).Struct.fields) |field| {
+            inline for (@typeInfo(CommandFlags).@"struct".fields) |field| {
                 @field(result, field.name) = @field(lhs, field.name) or @field(rhs, field.name);
             }
             return result;
@@ -23359,7 +24682,7 @@ pub fn CommandFlagsMixin(comptime CommandFlags: type) type {
         pub fn intersect(lhs: CommandFlags, rhs: CommandFlags) CommandFlags {
             var result: CommandFlags = .{};
             @setEvalBranchQuota(10_000);
-            inline for (@typeInfo(CommandFlags).Struct.fields) |field| {
+            inline for (@typeInfo(CommandFlags).@"struct".fields) |field| {
                 @field(result, field.name) = @field(lhs, field.name) and @field(rhs, field.name);
             }
             return result;
@@ -23367,7 +24690,7 @@ pub fn CommandFlagsMixin(comptime CommandFlags: type) type {
         pub fn complement(self: CommandFlags) CommandFlags {
             var result: CommandFlags = .{};
             @setEvalBranchQuota(10_000);
-            inline for (@typeInfo(CommandFlags).Struct.fields) |field| {
+            inline for (@typeInfo(CommandFlags).@"struct".fields) |field| {
                 @field(result, field.name) = !@field(self, field.name);
             }
             return result;
@@ -23375,21 +24698,20 @@ pub fn CommandFlagsMixin(comptime CommandFlags: type) type {
         pub fn subtract(lhs: CommandFlags, rhs: CommandFlags) CommandFlags {
             var result: CommandFlags = .{};
             @setEvalBranchQuota(10_000);
-            inline for (@typeInfo(CommandFlags).Struct.fields) |field| {
+            inline for (@typeInfo(CommandFlags).@"struct".fields) |field| {
                 @field(result, field.name) = @field(lhs, field.name) and !@field(rhs, field.name);
             }
             return result;
         }
         pub fn contains(lhs: CommandFlags, rhs: CommandFlags) bool {
             @setEvalBranchQuota(10_000);
-            inline for (@typeInfo(CommandFlags).Struct.fields) |field| {
+            inline for (@typeInfo(CommandFlags).@"struct".fields) |field| {
                 if (!@field(lhs, field.name) and @field(rhs, field.name)) {
                     return false;
                 }
             }
             return true;
         }
-        pub usingnamespace FlagFormatMixin(CommandFlags);
     };
 }
 pub const BaseCommandFlags = packed struct {
@@ -23416,7 +24738,12 @@ pub const BaseCommandFlags = packed struct {
             .enumerateInstanceExtensionProperties => "vkEnumerateInstanceExtensionProperties",
         };
     }
-    pub usingnamespace CommandFlagsMixin(BaseCommandFlags);
+    pub const merge = CommandFlagsMixin(BaseCommandFlags).merge;
+    pub const intersect = CommandFlagsMixin(BaseCommandFlags).intersect;
+    pub const complement = CommandFlagsMixin(BaseCommandFlags).complement;
+    pub const subtract = CommandFlagsMixin(BaseCommandFlags).subtract;
+    pub const contains = CommandFlagsMixin(BaseCommandFlags).contains;
+    pub const format = FlagFormatMixin(BaseCommandFlags).format;
 };
 pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
     return struct {
@@ -23431,18 +24758,18 @@ pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
             break :blk cmds;
         };
         pub const Dispatch = blk: {
-            @setEvalBranchQuota(10_000);
+            @setEvalBranchQuota(1_000_000);
             const Type = std.builtin.Type;
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
-                for (@typeInfo(BaseCommandFlags).Struct.fields) |field| {
+                for (@typeInfo(BaseCommandFlags).@"struct".fields) |field| {
                     fields_len += @intCast(@intFromBool(@field(commands, field.name)));
                 }
                 break :fields_len fields_len;
             };
             var fields: [fields_len]Type.StructField = undefined;
             var i: usize = 0;
-            for (@typeInfo(BaseCommandFlags).Struct.fields) |field| {
+            for (@typeInfo(BaseCommandFlags).@"struct".fields) |field| {
                 if (@field(commands, field.name)) {
                     const field_tag = std.enums.nameCast(std.meta.FieldEnum(BaseCommandFlags), field.name);
                     const PfnType = BaseCommandFlags.CmdType(field_tag);
@@ -23457,7 +24784,7 @@ pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
                 }
             }
             break :blk @Type(.{
-                .Struct = .{
+                .@"struct" = .{
                     .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
@@ -23469,8 +24796,12 @@ pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
                 const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
-                const cmd_ptr = loader(Instance.null_handle, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                if (loader(Instance.null_handle, name)) |cmd_ptr| {
+                    @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                } else {
+                    std.log.err("Command loading failed for \"{s}\".", .{field.name});
+                    return error.CommandLoadFailure;
+                }
             }
             return self;
         }
@@ -23566,6 +24897,23 @@ pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const EnumerateInstanceLayerPropertiesAllocError =
+            EnumerateInstanceLayerPropertiesError || Allocator.Error;
+        pub fn enumerateInstanceLayerPropertiesAlloc(
+            self: Self,
+            allocator: Allocator,
+        ) EnumerateInstanceLayerPropertiesAllocError![]LayerProperties {
+            var count: u32 = undefined;
+            var data: []LayerProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumerateInstanceLayerProperties(&count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumerateInstanceLayerProperties(&count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub const EnumerateInstanceExtensionPropertiesError = error{
             OutOfHostMemory,
             OutOfDeviceMemory,
@@ -23592,6 +24940,24 @@ pub fn BaseWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const EnumerateInstanceExtensionPropertiesAllocError =
+            EnumerateInstanceExtensionPropertiesError || Allocator.Error;
+        pub fn enumerateInstanceExtensionPropertiesAlloc(
+            self: Self,
+            p_layer_name: ?[*:0]const u8,
+            allocator: Allocator,
+        ) EnumerateInstanceExtensionPropertiesAllocError![]ExtensionProperties {
+            var count: u32 = undefined;
+            var data: []ExtensionProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumerateInstanceExtensionProperties(p_layer_name, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumerateInstanceExtensionProperties(p_layer_name, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
     };
 }
@@ -23931,7 +25297,12 @@ pub const InstanceCommandFlags = packed struct {
             .getPhysicalDeviceCooperativeMatrixPropertiesKHR => "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR",
         };
     }
-    pub usingnamespace CommandFlagsMixin(InstanceCommandFlags);
+    pub const merge = CommandFlagsMixin(InstanceCommandFlags).merge;
+    pub const intersect = CommandFlagsMixin(InstanceCommandFlags).intersect;
+    pub const complement = CommandFlagsMixin(InstanceCommandFlags).complement;
+    pub const subtract = CommandFlagsMixin(InstanceCommandFlags).subtract;
+    pub const contains = CommandFlagsMixin(InstanceCommandFlags).contains;
+    pub const format = FlagFormatMixin(InstanceCommandFlags).format;
 };
 pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
     return struct {
@@ -23946,18 +25317,18 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             break :blk cmds;
         };
         pub const Dispatch = blk: {
-            @setEvalBranchQuota(10_000);
+            @setEvalBranchQuota(1_000_000);
             const Type = std.builtin.Type;
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
-                for (@typeInfo(InstanceCommandFlags).Struct.fields) |field| {
+                for (@typeInfo(InstanceCommandFlags).@"struct".fields) |field| {
                     fields_len += @intCast(@intFromBool(@field(commands, field.name)));
                 }
                 break :fields_len fields_len;
             };
             var fields: [fields_len]Type.StructField = undefined;
             var i: usize = 0;
-            for (@typeInfo(InstanceCommandFlags).Struct.fields) |field| {
+            for (@typeInfo(InstanceCommandFlags).@"struct".fields) |field| {
                 if (@field(commands, field.name)) {
                     const field_tag = std.enums.nameCast(std.meta.FieldEnum(InstanceCommandFlags), field.name);
                     const PfnType = InstanceCommandFlags.CmdType(field_tag);
@@ -23972,7 +25343,7 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 }
             }
             break :blk @Type(.{
-                .Struct = .{
+                .@"struct" = .{
                     .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
@@ -23984,8 +25355,12 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
                 const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
-                const cmd_ptr = loader(instance, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                if (loader(instance, name)) |cmd_ptr| {
+                    @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                } else {
+                    std.log.err("Command loading failed for \"{s}\".", .{field.name});
+                    return error.CommandLoadFailure;
+                }
             }
             return self;
         }
@@ -24035,6 +25410,24 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const EnumeratePhysicalDevicesAllocError =
+            EnumeratePhysicalDevicesError || Allocator.Error;
+        pub fn enumeratePhysicalDevicesAlloc(
+            self: Self,
+            instance: Instance,
+            allocator: Allocator,
+        ) EnumeratePhysicalDevicesAllocError![]PhysicalDevice {
+            var count: u32 = undefined;
+            var data: []PhysicalDevice = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumeratePhysicalDevices(instance, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumeratePhysicalDevices(instance, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub fn getDeviceProcAddr(
             self: Self,
             device: Device,
@@ -24067,6 +25460,18 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 p_queue_family_property_count,
                 p_queue_family_properties,
             );
+        }
+        pub fn getPhysicalDeviceQueueFamilyPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) Allocator.Error![]QueueFamilyProperties {
+            var count: u32 = undefined;
+            self.getPhysicalDeviceQueueFamilyProperties(physical_device, &count, null);
+            const data = try allocator.alloc(QueueFamilyProperties, count);
+            errdefer allocator.free(data);
+            self.getPhysicalDeviceQueueFamilyProperties(physical_device, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub fn getPhysicalDeviceMemoryProperties(
             self: Self,
@@ -24198,6 +25603,24 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const EnumerateDeviceLayerPropertiesAllocError =
+            EnumerateDeviceLayerPropertiesError || Allocator.Error;
+        pub fn enumerateDeviceLayerPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) EnumerateDeviceLayerPropertiesAllocError![]LayerProperties {
+            var count: u32 = undefined;
+            var data: []LayerProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumerateDeviceLayerProperties(physical_device, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumerateDeviceLayerProperties(physical_device, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub const EnumerateDeviceExtensionPropertiesError = error{
             OutOfHostMemory,
             OutOfDeviceMemory,
@@ -24227,6 +25650,25 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const EnumerateDeviceExtensionPropertiesAllocError =
+            EnumerateDeviceExtensionPropertiesError || Allocator.Error;
+        pub fn enumerateDeviceExtensionPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_layer_name: ?[*:0]const u8,
+            allocator: Allocator,
+        ) EnumerateDeviceExtensionPropertiesAllocError![]ExtensionProperties {
+            var count: u32 = undefined;
+            var data: []ExtensionProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumerateDeviceExtensionProperties(physical_device, p_layer_name, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumerateDeviceExtensionProperties(physical_device, p_layer_name, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub fn getPhysicalDeviceSparseImageFormatProperties(
             self: Self,
             physical_device: PhysicalDevice,
@@ -24248,6 +25690,23 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 p_property_count,
                 p_properties,
             );
+        }
+        pub fn getPhysicalDeviceSparseImageFormatPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            format: Format,
+            @"type": ImageType,
+            samples: SampleCountFlags,
+            usage: ImageUsageFlags,
+            tiling: ImageTiling,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageFormatProperties {
+            var count: u32 = undefined;
+            self.getPhysicalDeviceSparseImageFormatProperties(physical_device, format, @"type", samples, usage, tiling, &count, null);
+            const data = try allocator.alloc(SparseImageFormatProperties, count);
+            errdefer allocator.free(data);
+            self.getPhysicalDeviceSparseImageFormatProperties(physical_device, format, @"type", samples, usage, tiling, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const CreateAndroidSurfaceKHRError = error{
             OutOfHostMemory,
@@ -24558,6 +26017,25 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const GetPhysicalDeviceSurfaceFormatsAllocKHRError =
+            GetPhysicalDeviceSurfaceFormatsKHRError || Allocator.Error;
+        pub fn getPhysicalDeviceSurfaceFormatsAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfaceFormatsAllocKHRError![]SurfaceFormatKHR {
+            var count: u32 = undefined;
+            var data: []SurfaceFormatKHR = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub const GetPhysicalDeviceSurfacePresentModesKHRError = error{
             OutOfHostMemory,
             OutOfDeviceMemory,
@@ -24586,6 +26064,25 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetPhysicalDeviceSurfacePresentModesAllocKHRError =
+            GetPhysicalDeviceSurfacePresentModesKHRError || Allocator.Error;
+        pub fn getPhysicalDeviceSurfacePresentModesAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfacePresentModesAllocKHRError![]PresentModeKHR {
+            var count: u32 = undefined;
+            var data: []PresentModeKHR = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const CreateViSurfaceNNError = error{
             OutOfHostMemory,
@@ -25139,6 +26636,18 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 p_queue_family_properties,
             );
         }
+        pub fn getPhysicalDeviceQueueFamilyProperties2Alloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) Allocator.Error![]QueueFamilyProperties2 {
+            var count: u32 = undefined;
+            self.getPhysicalDeviceQueueFamilyProperties2(physical_device, &count, null);
+            const data = try allocator.alloc(QueueFamilyProperties2, count);
+            errdefer allocator.free(data);
+            self.getPhysicalDeviceQueueFamilyProperties2(physical_device, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub fn getPhysicalDeviceQueueFamilyProperties2KHR(
             self: Self,
             physical_device: PhysicalDevice,
@@ -25184,6 +26693,19 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 p_property_count,
                 p_properties,
             );
+        }
+        pub fn getPhysicalDeviceSparseImageFormatProperties2Alloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageFormatProperties2 {
+            var count: u32 = undefined;
+            self.getPhysicalDeviceSparseImageFormatProperties2(physical_device, p_format_info, &count, null);
+            const data = try allocator.alloc(SparseImageFormatProperties2, count);
+            errdefer allocator.free(data);
+            self.getPhysicalDeviceSparseImageFormatProperties2(physical_device, p_format_info, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub fn getPhysicalDeviceSparseImageFormatProperties2KHR(
             self: Self,
@@ -25503,6 +27025,24 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const EnumeratePhysicalDeviceGroupsAllocError =
+            EnumeratePhysicalDeviceGroupsError || Allocator.Error;
+        pub fn enumeratePhysicalDeviceGroupsAlloc(
+            self: Self,
+            instance: Instance,
+            allocator: Allocator,
+        ) EnumeratePhysicalDeviceGroupsAllocError![]PhysicalDeviceGroupProperties {
+            var count: u32 = undefined;
+            var data: []PhysicalDeviceGroupProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.enumeratePhysicalDeviceGroups(instance, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.enumeratePhysicalDeviceGroups(instance, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub const EnumeratePhysicalDeviceGroupsKHRError = error{
             OutOfHostMemory,
             OutOfDeviceMemory,
@@ -25556,6 +27096,25 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetPhysicalDevicePresentRectanglesAllocKHRError =
+            GetPhysicalDevicePresentRectanglesKHRError || Allocator.Error;
+        pub fn getPhysicalDevicePresentRectanglesAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDevicePresentRectanglesAllocKHRError![]Rect2D {
+            var count: u32 = undefined;
+            var data: []Rect2D = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDevicePresentRectanglesKHR(physical_device, surface, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDevicePresentRectanglesKHR(physical_device, surface, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const CreateIosSurfaceMVKError = error{
             OutOfHostMemory,
@@ -25707,6 +27266,25 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
             }
             return result;
         }
+        pub const GetPhysicalDeviceSurfaceFormats2AllocKHRError =
+            GetPhysicalDeviceSurfaceFormats2KHRError || Allocator.Error;
+        pub fn getPhysicalDeviceSurfaceFormats2AllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfaceFormats2AllocKHRError![]SurfaceFormat2KHR {
+            var count: u32 = undefined;
+            var data: []SurfaceFormat2KHR = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDeviceSurfaceFormats2KHR(physical_device, p_surface_info, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDeviceSurfaceFormats2KHR(physical_device, p_surface_info, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub const GetPhysicalDeviceDisplayProperties2KHRError = error{
             OutOfHostMemory,
             OutOfDeviceMemory,
@@ -25831,6 +27409,24 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetPhysicalDeviceCalibrateableTimeDomainsAllocKHRError =
+            GetPhysicalDeviceCalibrateableTimeDomainsKHRError || Allocator.Error;
+        pub fn getPhysicalDeviceCalibrateableTimeDomainsAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) GetPhysicalDeviceCalibrateableTimeDomainsAllocKHRError![]TimeDomainKHR {
+            var count: u32 = undefined;
+            var data: []TimeDomainKHR = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDeviceCalibrateableTimeDomainsKHR(physical_device, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDeviceCalibrateableTimeDomainsKHR(physical_device, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const GetPhysicalDeviceCalibrateableTimeDomainsEXTError = error{
             OutOfHostMemory,
@@ -26078,6 +27674,24 @@ pub fn InstanceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetPhysicalDeviceToolPropertiesAllocError =
+            GetPhysicalDeviceToolPropertiesError || Allocator.Error;
+        pub fn getPhysicalDeviceToolPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) GetPhysicalDeviceToolPropertiesAllocError![]PhysicalDeviceToolProperties {
+            var count: u32 = undefined;
+            var data: []PhysicalDeviceToolProperties = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPhysicalDeviceToolProperties(physical_device, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPhysicalDeviceToolProperties(physical_device, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const GetPhysicalDeviceToolPropertiesEXTError = error{
             OutOfHostMemory,
@@ -28115,7 +29729,12 @@ pub const DeviceCommandFlags = packed struct {
             .cmdSetRenderingInputAttachmentIndicesKHR => "vkCmdSetRenderingInputAttachmentIndicesKHR",
         };
     }
-    pub usingnamespace CommandFlagsMixin(DeviceCommandFlags);
+    pub const merge = CommandFlagsMixin(DeviceCommandFlags).merge;
+    pub const intersect = CommandFlagsMixin(DeviceCommandFlags).intersect;
+    pub const complement = CommandFlagsMixin(DeviceCommandFlags).complement;
+    pub const subtract = CommandFlagsMixin(DeviceCommandFlags).subtract;
+    pub const contains = CommandFlagsMixin(DeviceCommandFlags).contains;
+    pub const format = FlagFormatMixin(DeviceCommandFlags).format;
 };
 pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
     return struct {
@@ -28130,18 +29749,18 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
             break :blk cmds;
         };
         pub const Dispatch = blk: {
-            @setEvalBranchQuota(10_000);
+            @setEvalBranchQuota(1_000_000);
             const Type = std.builtin.Type;
             const fields_len = fields_len: {
                 var fields_len: u32 = 0;
-                for (@typeInfo(DeviceCommandFlags).Struct.fields) |field| {
+                for (@typeInfo(DeviceCommandFlags).@"struct".fields) |field| {
                     fields_len += @intCast(@intFromBool(@field(commands, field.name)));
                 }
                 break :fields_len fields_len;
             };
             var fields: [fields_len]Type.StructField = undefined;
             var i: usize = 0;
-            for (@typeInfo(DeviceCommandFlags).Struct.fields) |field| {
+            for (@typeInfo(DeviceCommandFlags).@"struct".fields) |field| {
                 if (@field(commands, field.name)) {
                     const field_tag = std.enums.nameCast(std.meta.FieldEnum(DeviceCommandFlags), field.name);
                     const PfnType = DeviceCommandFlags.CmdType(field_tag);
@@ -28156,7 +29775,7 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 }
             }
             break :blk @Type(.{
-                .Struct = .{
+                .@"struct" = .{
                     .layout = .auto,
                     .fields = &fields,
                     .decls = &[_]std.builtin.Type.Declaration{},
@@ -28168,8 +29787,12 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
             var self: Self = undefined;
             inline for (std.meta.fields(Dispatch)) |field| {
                 const name: [*:0]const u8 = @ptrCast(field.name ++ "\x00");
-                const cmd_ptr = loader(device, name) orelse return error.CommandLoadFailure;
-                @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                if (loader(device, name)) |cmd_ptr| {
+                    @field(self.dispatch, field.name) = @ptrCast(cmd_ptr);
+                } else {
+                    std.log.err("Command loading failed for \"{s}\".", .{field.name});
+                    return error.CommandLoadFailure;
+                }
             }
             return self;
         }
@@ -28510,6 +30133,19 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 p_sparse_memory_requirement_count,
                 p_sparse_memory_requirements,
             );
+        }
+        pub fn getImageSparseMemoryRequirementsAlloc(
+            self: Self,
+            device: Device,
+            image: Image,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements {
+            var count: u32 = undefined;
+            self.getImageSparseMemoryRequirements(device, image, &count, null);
+            const data = try allocator.alloc(SparseImageMemoryRequirements, count);
+            errdefer allocator.free(data);
+            self.getImageSparseMemoryRequirements(device, image, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const QueueBindSparseError = error{
             OutOfHostMemory,
@@ -29176,6 +30812,25 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetPipelineCacheDataAllocError =
+            GetPipelineCacheDataError || Allocator.Error;
+        pub fn getPipelineCacheDataAlloc(
+            self: Self,
+            device: Device,
+            pipeline_cache: PipelineCache,
+            allocator: Allocator,
+        ) GetPipelineCacheDataAllocError![]void {
+            var count: u32 = undefined;
+            var data: []void = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getPipelineCacheData(device, pipeline_cache, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getPipelineCacheData(device, pipeline_cache, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const MergePipelineCachesError = error{
             OutOfHostMemory,
@@ -30734,6 +32389,25 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 else => return error.Unknown,
             }
             return result;
+        }
+        pub const GetSwapchainImagesAllocKHRError =
+            GetSwapchainImagesKHRError || Allocator.Error;
+        pub fn getSwapchainImagesAllocKHR(
+            self: Self,
+            device: Device,
+            swapchain: SwapchainKHR,
+            allocator: Allocator,
+        ) GetSwapchainImagesAllocKHRError![]Image {
+            var count: u32 = undefined;
+            var data: []Image = &.{};
+            errdefer allocator.free(data);
+            var result = Result.incomplete;
+            while (result == .incomplete) {
+                _ = try self.getSwapchainImagesKHR(device, swapchain, &count, null);
+                data = try allocator.realloc(data, count);
+                result = try self.getSwapchainImagesKHR(device, swapchain, &count, data.ptr);
+            }
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub const AcquireNextImageKHRResult = struct {
             result: Result,
@@ -32333,6 +34007,19 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 p_sparse_memory_requirements,
             );
         }
+        pub fn getImageSparseMemoryRequirements2Alloc(
+            self: Self,
+            device: Device,
+            p_info: *const ImageSparseMemoryRequirementsInfo2,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements2 {
+            var count: u32 = undefined;
+            self.getImageSparseMemoryRequirements2(device, p_info, &count, null);
+            const data = try allocator.alloc(SparseImageMemoryRequirements2, count);
+            errdefer allocator.free(data);
+            self.getImageSparseMemoryRequirements2(device, p_info, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
+        }
         pub fn getImageSparseMemoryRequirements2KHR(
             self: Self,
             device: Device,
@@ -32408,6 +34095,19 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
                 p_sparse_memory_requirement_count,
                 p_sparse_memory_requirements,
             );
+        }
+        pub fn getDeviceImageSparseMemoryRequirementsAlloc(
+            self: Self,
+            device: Device,
+            p_info: *const DeviceImageMemoryRequirements,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements2 {
+            var count: u32 = undefined;
+            self.getDeviceImageSparseMemoryRequirements(device, p_info, &count, null);
+            const data = try allocator.alloc(SparseImageMemoryRequirements2, count);
+            errdefer allocator.free(data);
+            self.getDeviceImageSparseMemoryRequirements(device, p_info, &count, data.ptr);
+            return if (count == data.len) data else allocator.realloc(data, count);
         }
         pub fn getDeviceImageSparseMemoryRequirementsKHR(
             self: Self,
@@ -38303,6 +40003,7 @@ pub fn DeviceWrapper(comptime apis: []const ApiInfo) type {
     };
 }
 pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
+    @setEvalBranchQuota(100_000);
     return struct {
         const Self = @This();
         pub const Wrapper = InstanceWrapper(apis);
@@ -38337,6 +40038,16 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_physical_devices,
             );
         }
+        pub const EnumeratePhysicalDevicesAllocError = Wrapper.EnumeratePhysicalDevicesAllocError;
+        pub fn enumeratePhysicalDevicesAlloc(
+            self: Self,
+            allocator: Allocator,
+        ) EnumeratePhysicalDevicesAllocError![]PhysicalDevice {
+            return self.wrapper.enumeratePhysicalDevicesAlloc(
+                self.handle,
+                allocator,
+            );
+        }
         pub fn getDeviceProcAddr(
             self: Self,
             device: Device,
@@ -38365,6 +40076,17 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 physical_device,
                 p_queue_family_property_count,
                 p_queue_family_properties,
+            );
+        }
+        pub const GetPhysicalDeviceQueueFamilyPropertiesAllocError = Wrapper.GetPhysicalDeviceQueueFamilyPropertiesAllocError;
+        pub fn getPhysicalDeviceQueueFamilyPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) Allocator.Error![]QueueFamilyProperties {
+            return self.wrapper.getPhysicalDeviceQueueFamilyPropertiesAlloc(
+                physical_device,
+                allocator,
             );
         }
         pub fn getPhysicalDeviceMemoryProperties(
@@ -38438,6 +40160,17 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_properties,
             );
         }
+        pub const EnumerateDeviceLayerPropertiesAllocError = Wrapper.EnumerateDeviceLayerPropertiesAllocError;
+        pub fn enumerateDeviceLayerPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) EnumerateDeviceLayerPropertiesAllocError![]LayerProperties {
+            return self.wrapper.enumerateDeviceLayerPropertiesAlloc(
+                physical_device,
+                allocator,
+            );
+        }
         pub const EnumerateDeviceExtensionPropertiesError = Wrapper.EnumerateDeviceExtensionPropertiesError;
         pub fn enumerateDeviceExtensionProperties(
             self: Self,
@@ -38451,6 +40184,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_layer_name,
                 p_property_count,
                 p_properties,
+            );
+        }
+        pub const EnumerateDeviceExtensionPropertiesAllocError = Wrapper.EnumerateDeviceExtensionPropertiesAllocError;
+        pub fn enumerateDeviceExtensionPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_layer_name: ?[*:0]const u8,
+            allocator: Allocator,
+        ) EnumerateDeviceExtensionPropertiesAllocError![]ExtensionProperties {
+            return self.wrapper.enumerateDeviceExtensionPropertiesAlloc(
+                physical_device,
+                p_layer_name,
+                allocator,
             );
         }
         pub fn getPhysicalDeviceSparseImageFormatProperties(
@@ -38473,6 +40219,27 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 tiling,
                 p_property_count,
                 p_properties,
+            );
+        }
+        pub const GetPhysicalDeviceSparseImageFormatPropertiesAllocError = Wrapper.GetPhysicalDeviceSparseImageFormatPropertiesAllocError;
+        pub fn getPhysicalDeviceSparseImageFormatPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            format: Format,
+            @"type": ImageType,
+            samples: SampleCountFlags,
+            usage: ImageUsageFlags,
+            tiling: ImageTiling,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageFormatProperties {
+            return self.wrapper.getPhysicalDeviceSparseImageFormatPropertiesAlloc(
+                physical_device,
+                format,
+                @"type",
+                samples,
+                usage,
+                tiling,
+                allocator,
             );
         }
         pub const CreateAndroidSurfaceKHRError = Wrapper.CreateAndroidSurfaceKHRError;
@@ -38633,6 +40400,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_surface_formats,
             );
         }
+        pub const GetPhysicalDeviceSurfaceFormatsAllocKHRError = Wrapper.GetPhysicalDeviceSurfaceFormatsAllocKHRError;
+        pub fn getPhysicalDeviceSurfaceFormatsAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfaceFormatsAllocKHRError![]SurfaceFormatKHR {
+            return self.wrapper.getPhysicalDeviceSurfaceFormatsAllocKHR(
+                physical_device,
+                surface,
+                allocator,
+            );
+        }
         pub const GetPhysicalDeviceSurfacePresentModesKHRError = Wrapper.GetPhysicalDeviceSurfacePresentModesKHRError;
         pub fn getPhysicalDeviceSurfacePresentModesKHR(
             self: Self,
@@ -38646,6 +40426,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 surface,
                 p_present_mode_count,
                 p_present_modes,
+            );
+        }
+        pub const GetPhysicalDeviceSurfacePresentModesAllocKHRError = Wrapper.GetPhysicalDeviceSurfacePresentModesAllocKHRError;
+        pub fn getPhysicalDeviceSurfacePresentModesAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfacePresentModesAllocKHRError![]PresentModeKHR {
+            return self.wrapper.getPhysicalDeviceSurfacePresentModesAllocKHR(
+                physical_device,
+                surface,
+                allocator,
             );
         }
         pub const CreateViSurfaceNNError = Wrapper.CreateViSurfaceNNError;
@@ -38997,6 +40790,17 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_queue_family_properties,
             );
         }
+        pub const GetPhysicalDeviceQueueFamilyProperties2AllocError = Wrapper.GetPhysicalDeviceQueueFamilyProperties2AllocError;
+        pub fn getPhysicalDeviceQueueFamilyProperties2Alloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) Allocator.Error![]QueueFamilyProperties2 {
+            return self.wrapper.getPhysicalDeviceQueueFamilyProperties2Alloc(
+                physical_device,
+                allocator,
+            );
+        }
         pub fn getPhysicalDeviceQueueFamilyProperties2KHR(
             self: Self,
             physical_device: PhysicalDevice,
@@ -39041,6 +40845,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_format_info,
                 p_property_count,
                 p_properties,
+            );
+        }
+        pub const GetPhysicalDeviceSparseImageFormatProperties2AllocError = Wrapper.GetPhysicalDeviceSparseImageFormatProperties2AllocError;
+        pub fn getPhysicalDeviceSparseImageFormatProperties2Alloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageFormatProperties2 {
+            return self.wrapper.getPhysicalDeviceSparseImageFormatProperties2Alloc(
+                physical_device,
+                p_format_info,
+                allocator,
             );
         }
         pub fn getPhysicalDeviceSparseImageFormatProperties2KHR(
@@ -39252,6 +41069,16 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_physical_device_group_properties,
             );
         }
+        pub const EnumeratePhysicalDeviceGroupsAllocError = Wrapper.EnumeratePhysicalDeviceGroupsAllocError;
+        pub fn enumeratePhysicalDeviceGroupsAlloc(
+            self: Self,
+            allocator: Allocator,
+        ) EnumeratePhysicalDeviceGroupsAllocError![]PhysicalDeviceGroupProperties {
+            return self.wrapper.enumeratePhysicalDeviceGroupsAlloc(
+                self.handle,
+                allocator,
+            );
+        }
         pub const EnumeratePhysicalDeviceGroupsKHRError = Wrapper.EnumeratePhysicalDeviceGroupsKHRError;
         pub fn enumeratePhysicalDeviceGroupsKHR(
             self: Self,
@@ -39277,6 +41104,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 surface,
                 p_rect_count,
                 p_rects,
+            );
+        }
+        pub const GetPhysicalDevicePresentRectanglesAllocKHRError = Wrapper.GetPhysicalDevicePresentRectanglesAllocKHRError;
+        pub fn getPhysicalDevicePresentRectanglesAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            surface: SurfaceKHR,
+            allocator: Allocator,
+        ) GetPhysicalDevicePresentRectanglesAllocKHRError![]Rect2D {
+            return self.wrapper.getPhysicalDevicePresentRectanglesAllocKHR(
+                physical_device,
+                surface,
+                allocator,
             );
         }
         pub const CreateIosSurfaceMVKError = Wrapper.CreateIosSurfaceMVKError;
@@ -39355,6 +41195,19 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_surface_formats,
             );
         }
+        pub const GetPhysicalDeviceSurfaceFormats2AllocKHRError = Wrapper.GetPhysicalDeviceSurfaceFormats2AllocKHRError;
+        pub fn getPhysicalDeviceSurfaceFormats2AllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+            allocator: Allocator,
+        ) GetPhysicalDeviceSurfaceFormats2AllocKHRError![]SurfaceFormat2KHR {
+            return self.wrapper.getPhysicalDeviceSurfaceFormats2AllocKHR(
+                physical_device,
+                p_surface_info,
+                allocator,
+            );
+        }
         pub const GetPhysicalDeviceDisplayProperties2KHRError = Wrapper.GetPhysicalDeviceDisplayProperties2KHRError;
         pub fn getPhysicalDeviceDisplayProperties2KHR(
             self: Self,
@@ -39420,6 +41273,17 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 physical_device,
                 p_time_domain_count,
                 p_time_domains,
+            );
+        }
+        pub const GetPhysicalDeviceCalibrateableTimeDomainsAllocKHRError = Wrapper.GetPhysicalDeviceCalibrateableTimeDomainsAllocKHRError;
+        pub fn getPhysicalDeviceCalibrateableTimeDomainsAllocKHR(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) GetPhysicalDeviceCalibrateableTimeDomainsAllocKHRError![]TimeDomainKHR {
+            return self.wrapper.getPhysicalDeviceCalibrateableTimeDomainsAllocKHR(
+                physical_device,
+                allocator,
             );
         }
         pub const GetPhysicalDeviceCalibrateableTimeDomainsEXTError = Wrapper.GetPhysicalDeviceCalibrateableTimeDomainsEXTError;
@@ -39564,6 +41428,17 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
                 p_tool_properties,
             );
         }
+        pub const GetPhysicalDeviceToolPropertiesAllocError = Wrapper.GetPhysicalDeviceToolPropertiesAllocError;
+        pub fn getPhysicalDeviceToolPropertiesAlloc(
+            self: Self,
+            physical_device: PhysicalDevice,
+            allocator: Allocator,
+        ) GetPhysicalDeviceToolPropertiesAllocError![]PhysicalDeviceToolProperties {
+            return self.wrapper.getPhysicalDeviceToolPropertiesAlloc(
+                physical_device,
+                allocator,
+            );
+        }
         pub const GetPhysicalDeviceToolPropertiesEXTError = Wrapper.GetPhysicalDeviceToolPropertiesEXTError;
         pub fn getPhysicalDeviceToolPropertiesEXT(
             self: Self,
@@ -39701,6 +41576,7 @@ pub fn InstanceProxy(comptime apis: []const ApiInfo) type {
     };
 }
 pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
+    @setEvalBranchQuota(100_000);
     return struct {
         const Self = @This();
         pub const Wrapper = DeviceWrapper(apis);
@@ -39904,6 +41780,18 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
                 image,
                 p_sparse_memory_requirement_count,
                 p_sparse_memory_requirements,
+            );
+        }
+        pub const GetImageSparseMemoryRequirementsAllocError = Wrapper.GetImageSparseMemoryRequirementsAllocError;
+        pub fn getImageSparseMemoryRequirementsAlloc(
+            self: Self,
+            image: Image,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements {
+            return self.wrapper.getImageSparseMemoryRequirementsAlloc(
+                self.handle,
+                image,
+                allocator,
             );
         }
         pub const QueueBindSparseError = Wrapper.QueueBindSparseError;
@@ -40290,6 +42178,18 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
                 pipeline_cache,
                 p_data_size,
                 p_data,
+            );
+        }
+        pub const GetPipelineCacheDataAllocError = Wrapper.GetPipelineCacheDataAllocError;
+        pub fn getPipelineCacheDataAlloc(
+            self: Self,
+            pipeline_cache: PipelineCache,
+            allocator: Allocator,
+        ) GetPipelineCacheDataAllocError![]void {
+            return self.wrapper.getPipelineCacheDataAlloc(
+                self.handle,
+                pipeline_cache,
+                allocator,
             );
         }
         pub const MergePipelineCachesError = Wrapper.MergePipelineCachesError;
@@ -41542,6 +43442,18 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
                 p_swapchain_images,
             );
         }
+        pub const GetSwapchainImagesAllocKHRError = Wrapper.GetSwapchainImagesAllocKHRError;
+        pub fn getSwapchainImagesAllocKHR(
+            self: Self,
+            swapchain: SwapchainKHR,
+            allocator: Allocator,
+        ) GetSwapchainImagesAllocKHRError![]Image {
+            return self.wrapper.getSwapchainImagesAllocKHR(
+                self.handle,
+                swapchain,
+                allocator,
+            );
+        }
         pub const AcquireNextImageKHRError = Wrapper.AcquireNextImageKHRError;
         pub const AcquireNextImageKHRResult = Wrapper.AcquireNextImageKHRResult;
         pub fn acquireNextImageKHR(
@@ -42500,6 +44412,18 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
                 p_sparse_memory_requirements,
             );
         }
+        pub const GetImageSparseMemoryRequirements2AllocError = Wrapper.GetImageSparseMemoryRequirements2AllocError;
+        pub fn getImageSparseMemoryRequirements2Alloc(
+            self: Self,
+            p_info: *const ImageSparseMemoryRequirementsInfo2,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements2 {
+            return self.wrapper.getImageSparseMemoryRequirements2Alloc(
+                self.handle,
+                p_info,
+                allocator,
+            );
+        }
         pub fn getImageSparseMemoryRequirements2KHR(
             self: Self,
             p_info: *const ImageSparseMemoryRequirementsInfo2,
@@ -42568,6 +44492,18 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
                 p_info,
                 p_sparse_memory_requirement_count,
                 p_sparse_memory_requirements,
+            );
+        }
+        pub const GetDeviceImageSparseMemoryRequirementsAllocError = Wrapper.GetDeviceImageSparseMemoryRequirementsAllocError;
+        pub fn getDeviceImageSparseMemoryRequirementsAlloc(
+            self: Self,
+            p_info: *const DeviceImageMemoryRequirements,
+            allocator: Allocator,
+        ) Allocator.Error![]SparseImageMemoryRequirements2 {
+            return self.wrapper.getDeviceImageSparseMemoryRequirementsAlloc(
+                self.handle,
+                p_info,
+                allocator,
             );
         }
         pub fn getDeviceImageSparseMemoryRequirementsKHR(
@@ -46950,6 +48886,7 @@ pub fn DeviceProxy(comptime apis: []const ApiInfo) type {
     };
 }
 pub fn CommandBufferProxy(comptime apis: []const ApiInfo) type {
+    @setEvalBranchQuota(100_000);
     return struct {
         const Self = @This();
         pub const Wrapper = DeviceWrapper(apis);
@@ -50025,6 +51962,7 @@ pub fn CommandBufferProxy(comptime apis: []const ApiInfo) type {
     };
 }
 pub fn QueueProxy(comptime apis: []const ApiInfo) type {
+    @setEvalBranchQuota(100_000);
     return struct {
         const Self = @This();
         pub const Wrapper = DeviceWrapper(apis);
